@@ -1,3 +1,5 @@
+using Insomnia.Core.Database;
+using Insomnia.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -5,6 +7,7 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Azure;
 
 namespace Insomnia.Core
 {
@@ -26,6 +29,11 @@ namespace Insomnia.Core
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddSingleton<IConnectionConfig, ConnectionConfig>();
+            services.AddSingleton<IDatabaseOperations, DatabaseOperations>();
+            services.AddTransient<IDkpService, DkpService>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
