@@ -33,6 +33,27 @@
     <None Remove="ClientApp\src\app\app-routing.module.ts" />
     <None Remove="ClientApp\src\app\raider\raider.ts" />
     <None Remove="ClientApp\src\app\table\sortable.directive.ts" />
+    <None Remove="ClientApp\src\assets\druid_icon.png" />
+    <None Remove="ClientApp\src\assets\hunter_icon.png" />
+    <None Remove="ClientApp\src\assets\mage_icon.png" />
+    <None Remove="ClientApp\src\assets\paladin_icon.png" />
+    <None Remove="ClientApp\src\assets\priest_icon.png" />
+    <None Remove="ClientApp\src\assets\rogue_icon.png" />
+    <None Remove="ClientApp\src\assets\shaman_icon.png" />
+    <None Remove="ClientApp\src\assets\warlock_icon.png" />
+    <None Remove="ClientApp\src\assets\warrior_icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ClientApp\src\assets\druid_icon.png" />
+    <Content Include="ClientApp\src\assets\hunter_icon.png" />
+    <Content Include="ClientApp\src\assets\mage_icon.png" />
+    <Content Include="ClientApp\src\assets\paladin_icon.png" />
+    <Content Include="ClientApp\src\assets\priest_icon.png" />
+    <Content Include="ClientApp\src\assets\rogue_icon.png" />
+    <Content Include="ClientApp\src\assets\shaman_icon.png" />
+    <Content Include="ClientApp\src\assets\warlock_icon.png" />
+    <Content Include="ClientApp\src\assets\warrior_icon.png" />
   </ItemGroup>
 
   <ItemGroup>
