@@ -9,13 +9,13 @@ import { SortDirection } from '../table/sortable.directive';
 
 interface ISearchResult {
   raiders: Raider[];
-  total: number;
+  //total: number;
 }
 
 interface IState {
-  page: number;
-  pageSize: number;
-  searchTerm: string;
+  //page: number;
+  //pageSize: number;
+  //searchTerm: string;
   sortColumn: string;
   sortDirection: SortDirection;
 }
@@ -50,9 +50,9 @@ export class RaiderDkpService {
   private _total$ = new BehaviorSubject<number>(0);
 
   private _state: IState = {
-    page: 1,
-    pageSize: 4,
-    searchTerm: '',
+    //page: 1,
+    //pageSize: 4,
+    //searchTerm: '',
     sortColumn: '',
     sortDirection: ''
   };
@@ -67,7 +67,7 @@ export class RaiderDkpService {
           tap(() => this._loading$.next(false))
         ).subscribe(result => {
           this._raiders$.next(result.raiders);
-          this._total$.next(result.total);
+          //this._total$.next(result.total);
         });
 
         this._search$.next(); },
@@ -79,15 +79,15 @@ export class RaiderDkpService {
   }
 
   get raiders$() { return this._raiders$.asObservable(); }
-  get total$() { return this._total$.asObservable(); }
+  //get total$() { return this._total$.asObservable(); }
   get loading$() { return this._loading$.asObservable(); }
-  get page() { return this._state.page; }
-  get pageSize() { return this._state.pageSize; }
-  get searchTerm() { return this._state.searchTerm; }
+  //get page() { return this._state.page; }
+  //get pageSize() { return this._state.pageSize; }
+  //get searchTerm() { return this._state.searchTerm; }
 
-  set page(page: number) { this._set({ page }); }
-  set pageSize(pageSize: number) { this._set({ pageSize }); }
-  set searchTerm(searchTerm: string) { this._set({ searchTerm }); }
+  //set page(page: number) { this._set({ page }); }
+  //set pageSize(pageSize: number) { this._set({ pageSize }); }
+  //set searchTerm(searchTerm: string) { this._set({ searchTerm }); }
   set sortColumn(sortColumn: string) { this._set({ sortColumn }); }
   set sortDirection(sortDirection: SortDirection) { this._set({ sortDirection }); }
 
@@ -97,18 +97,12 @@ export class RaiderDkpService {
   }
 
   private _search(res: Raider[]): Observable<ISearchResult> {
-    const { sortColumn, sortDirection, pageSize, page, searchTerm } = this._state;
+    const { sortColumn, sortDirection } = this._state;
 
     // 1. sort
     let raiders = sort(res, sortColumn, sortDirection);
 
-    // 2. filter
-    raiders = raiders.filter(raider => matches(raider, searchTerm, this.pipe));
-    const total = raiders.length;
-
-    // 3. paginate
-    raiders = raiders.slice((page - 1) * pageSize, (page - 1) * pageSize + pageSize);
-    return of({ raiders, total });
+    return of({ raiders });
   }
 
   getRaiders(): Observable<Raider[]> {

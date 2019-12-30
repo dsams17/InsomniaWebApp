@@ -1,31 +1,30 @@
+<body>
 <form>
-  <div class="form-group form-inline">
-    Full text search: <input class="form-control ml-2" type="text" name="searchTerm" [(ngModel)]="service.searchTerm" />
-    <span class="ml-3" *ngIf="service.loading$ | async">Loading...</span>
-  </div>
   <table class="table table-striped">
     <thead>
-      <tr>
-        <th sortable="name" scope="col" (sort)="onSort($event)">
-          Name
-        </th>
-        <th scope="col" sortable="characterClass" (sort)="onSort($event)">Class</th>
-        <th scope="col" sortable="dkp" (sort)="onSort($event)">DKP</th>
-      </tr>
+    <tr>
+      <th sortable="name" scope="col" (sort)="onSort($event)">
+        Name
+      </th>
+      <th scope="col" sortable="characterClass" (sort)="onSort($event)">Class</th>
+      <th scope="col" sortable="dkp" (sort)="onSort($event)">DKP</th>
+    </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let raider of raiders$ | async">
-        <td>
-          <!--<img [src]="'https://upload.wikimedia.org/wikipedia/commons/' + country.flag" class="mr-2" style="width: 20px">
-  <ngb-highlight [result]="raider.name" [term]="service.searchTerm">
-
-  </ngb-highlight>-->
-          <a routerLink="/raiderdetail/{{raider.name}}">{{raider.name}}</a>
-        </td>
-        <td><ngb-highlight [result]="raider.characterClass" [term]="service.searchTerm"></ngb-highlight></td>
-        <td><ngb-highlight [result]="raider.dkp | number" [term]="service.searchTerm"></ngb-highlight></td>
-      </tr>
+    <tr *ngFor="let raider of raiders$ | async">
+      <td>
+        <!--<ngb-highlight [result]="raider.name" [term]="service.searchTerm"></ngb-highlight>-->
+        <a routerLink="/raiderdetail/{{raider.name}}">{{raider.name}}</a>
+      </td>
+      <td>
+        <img src={{classPicture[raider.characterClass.toUpperCase()]}} class="mr-2" style="width: 20px">
+        <ngb-highlight [result]="raider.characterClass"></ngb-highlight>
+      </td>
+      <td><ngb-highlight [result]="raider.dkp | number"></ngb-highlight></td>
+    </tr>
     </tbody>
   </table>
 
 </form>
+</body>
+
