@@ -35,11 +35,11 @@ function sort(raiders: Raider[], column: string, direction: string): Raider[] {
   }
 }
 
-function matches(raider: Raider, term: string, pipe: PipeTransform) {
-  return raider.name.toLowerCase().includes(term)
-    || pipe.transform(raider.characterClass).includes(term)
-    || pipe.transform(raider.dkp).includes(term);
-}
+//function matches(raider: Raider, term: string, pipe: PipeTransform) {
+//  return raider.name.toLowerCase().includes(term)
+//    || pipe.transform(raider.characterClass).includes(term)
+//    || pipe.transform(raider.dkp).includes(term);
+//}
 
 @Injectable({providedIn: 'root'})
 export class RaiderDkpService {
@@ -65,7 +65,7 @@ export class RaiderDkpService {
           switchMap(() => this._search(res)),
           delay(200),
           tap(() => this._loading$.next(false))
-        ).subscribe(result => {
+        ).subscribe((result: ISearchResult) => {
           this._raiders$.next(result.raiders);
           //this._total$.next(result.total);
         });
@@ -92,7 +92,7 @@ export class RaiderDkpService {
   set sortDirection(sortDirection: SortDirection) { this._set({ sortDirection }); }
 
   private _set(patch: Partial<IState>) {
-    Object.assign(this._state, patch);
+    (<any>Object).assign(this._state, patch);
     this._search$.next();
   }
 
