@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Insomnia.Core.Database;
 using Insomnia.Core.Models;
 
@@ -12,11 +13,30 @@ namespace Insomnia.Core.Services
         {
             _database = database;
         }
-        public async Task<RaiderEntity> InsertRaider(RaiderEntity raider)
+        public async Task<Raider> InsertRaider(RaiderEntity raider)
         {
             var result = await _database.Insert("Raider", raider);
 
-            return (RaiderEntity)result.Result;
+            var entity = (RaiderEntity)result.Result;
+
+            return new Raider
+            {
+                CharacterClass = entity.PartitionKey,
+                Dkp = entity.Dkp,
+                Name = entity.RowKey
+            };
+        }
+
+        public async Task<Raider[]> GetRaiders()
+        {
+            var result = await _database.SelectAll("Raider");
+
+            return result.Select(x => new Raider
+            {
+                CharacterClass = x.PartitionKey,
+                Dkp = x.Dkp,
+                Name = x.RowKey
+            }).ToArray();
         }
     }
 }

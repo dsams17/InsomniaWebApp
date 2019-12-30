@@ -5,6 +5,7 @@ namespace Insomnia.Core.Services
 {
     public interface IDkpService
     {
-        Task<RaiderEntity> InsertRaider(RaiderEntity raider);
+        Task<Raider> InsertRaider(RaiderEntity raider);
+        Task<Raider[]> GetRaiders();
     }
 }

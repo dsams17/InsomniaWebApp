@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Raider } from '../raider/raider';
-import { RaiderDkpService } from '../raider/raider-dkp.service';
+import { RaiderDkpService } from './raider-dkp.service';
 
 @Component({
   selector: 'app-home',
@@ -17,13 +17,13 @@ export class RaiderDetailsComponent {
   raider : Raider;
 
   ngOnInit() {
-    this.getRaider();
+    //this.getRaider();
   }
 
 
-  getRaider(): void {
-    const id = +this.route.snapshot.paramMap.get('id');
-    this.raider = this.raiderService.getRaider(id);
-  }
+  //getRaider(): void {
+    //const id = +this.route.snapshot.paramMap.get('id');
+    //this.raider = this.raiderService.getRaider(id);
+  //}
 
 }

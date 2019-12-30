@@ -1,10 +1,11 @@
 <body>
 <h1>Main Raiders Page</h1>
+<ngbd-table-complete></ngbd-table-complete>
 <div class="grid grid-pad">
   <a *ngFor="let raider of raiders" class="col-1-4"
      routerLink="/raiderdetail/{{raider.id}}">
     <div class="module raider">
-      <h4>{{raider.name}}</h4>
+      <h4>{{raider.name}} {{raider.dkp}} {{raider.characterClass}}</h4>
     </div>
   </a>
 </div>

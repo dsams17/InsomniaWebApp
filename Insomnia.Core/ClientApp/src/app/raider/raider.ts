@@ -1,10 +1,10 @@
 export class Raider {
-  id: number;
+  characterClass: string;
   name: string;
   dkp: number;
 
-  constructor(id: number, name: string, dkp: number) {
-    this.id = id;
+  constructor(characterClass: string, name: string, dkp: number) {
+    this.characterClass = characterClass;
     this.name = name;
     this.dkp = dkp;
   }
