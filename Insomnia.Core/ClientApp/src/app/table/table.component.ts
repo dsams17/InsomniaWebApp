@@ -1,7 +1,7 @@
 import { Component, QueryList, ViewChildren } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { RaiderDkpService } from '../raider/raider-dkp.service';
+import { RaiderTableService as RaiderDkpService } from '../raider/raider-table.service';
 import { Raider } from '../raider/raider';
 import { NgbdSortableHeader, SortEvent } from './sortable.directive';
 

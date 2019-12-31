@@ -14,7 +14,7 @@
     <tr *ngFor="let raider of raiders$ | async">
       <td>
         <!--<ngb-highlight [result]="raider.name" [term]="service.searchTerm"></ngb-highlight>-->
-        <a routerLink="/raiderdetail/{{raider.name}}">{{raider.name}}</a>
+        <a routerLink="/raiderdetail/{{raider.name}}" [queryParams]="{charClass: raider.characterClass}">{{raider.name}}</a>
       </td>
       <td>
         <img src={{classPicture[raider.characterClass.toUpperCase()]}} class="mr-2" style="width: 20px">

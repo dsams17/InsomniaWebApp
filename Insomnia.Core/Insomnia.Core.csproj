@@ -32,6 +32,9 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\app-routing.module.ts" />
+    <None Remove="ClientApp\src\app\raider\dkp-item.ts" />
+    <None Remove="ClientApp\src\app\raider\raider-details.ts" />
+    <None Remove="ClientApp\src\app\raider\raider-http.service.ts" />
     <None Remove="ClientApp\src\app\raider\raider.ts" />
     <None Remove="ClientApp\src\app\table\sortable.directive.ts" />
     <None Remove="ClientApp\src\assets\druid_icon.png" />
@@ -61,6 +64,9 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\raider\dkp-item.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\raider\raider-details.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\raider\raider-http.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\raider\raider.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\table\sortable.directive.ts" />
   </ItemGroup>

@@ -12,7 +12,8 @@ import { FooterComponent } from './footer/footer.component';
 import { RaiderDetailsComponent } from './raider/raider-details.component';
 import { NgbdTableComplete } from './table/table.component';
 import { NgbdSortableHeader } from "./table/sortable.directive";
-import { RaiderDkpService } from "./raider/raider-dkp.service";
+import { RaiderTableService } from "./raider/raider-table.service";
+import { RaiderHttpService } from "./raider/raider-http.service";
 import { DecimalPipe } from "@angular/common";
 
 @NgModule({
@@ -33,7 +34,7 @@ import { DecimalPipe } from "@angular/common";
     AppRoutingModule,
     NgbModule
   ],
-  providers: [RaiderDkpService, DecimalPipe],
+  providers: [RaiderTableService, RaiderHttpService, DecimalPipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Raider } from '../raider/raider';
-import { RaiderDkpService } from './raider-dkp.service';
+import { RaiderHttpService } from './raider-http.service';
+
+import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -10,20 +12,23 @@ import { RaiderDkpService } from './raider-dkp.service';
 })
 export class RaiderDetailsComponent {
 
-  constructor(private raiderService: RaiderDkpService,
+  constructor(private raiderService: RaiderHttpService,
               private route: ActivatedRoute) { }
 
 
   raider : Raider;
 
   ngOnInit() {
-    //this.getRaider();
+    this.getRaider();
   }
 
 
-  //getRaider(): void {
-    //const id = +this.route.snapshot.paramMap.get('id');
-    //this.raider = this.raiderService.getRaider(id);
-  //}
+  getRaider(): void {
+    var name = this.route.snapshot.paramMap.get('name');
+    var charClass = this.route.snapshot.queryParamMap.get('charClass');
+    this.raiderService.getRaider(name, charClass)
+      .subscribe((res: Raider) => { this.raider = res; },
+                  err => { console.log(err); });
+  }
 
 }

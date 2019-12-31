@@ -15,7 +15,7 @@ namespace Insomnia.Core.Services
         }
         public async Task<Raider> InsertRaider(RaiderEntity raider)
         {
-            var result = await _database.Insert("Raider", raider);
+            var result = await _database.Insert<RaiderEntity>("Raider", raider);
 
             var entity = (RaiderEntity)result.Result;
 
@@ -37,6 +37,20 @@ namespace Insomnia.Core.Services
                 Dkp = x.Dkp,
                 Name = x.RowKey
             }).ToArray();
+        }
+
+        public async Task<Raider> GetRaider(string characterClass, string name)
+        {
+            var raiderEntity = await _database.Select<RaiderEntity>("Raider", characterClass, name);
+
+            var res = (RaiderEntity) raiderEntity.Result;
+
+            return new Raider
+            {
+                Name = res.RowKey,
+                CharacterClass = res.PartitionKey,
+                Dkp = res.Dkp
+            };
         }
     }
 }

@@ -6,7 +6,7 @@ import  { RaiderDetailsComponent } from './raider/raider-details.component';
 const routes: Routes = [
   { path: "", pathMatch: "full", redirectTo: "home" },
   { path: "home", component: HomeComponent },
-  { path: 'raiderdetail/:id', component: RaiderDetailsComponent },
+  { path: 'raiderdetail/:name', component: RaiderDetailsComponent },
   { path: "**", redirectTo: "home" }
 ];
 

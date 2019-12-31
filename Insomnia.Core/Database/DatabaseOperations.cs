@@ -18,11 +18,11 @@ namespace Insomnia.Core.Database
             _client = account.CreateCloudTableClient();
         }
 
-        public async Task<TableResult> Insert(string tableName, RaiderEntity raider)
+        public async Task<TableResult> Insert <T>(string tableName, T entity) where T : ITableEntity
         {
             var table = _client.GetTableReference(tableName);
 
-            var insertOperation = TableOperation.Insert(raider);
+            var insertOperation = TableOperation.Insert(entity);
 
             return await table.ExecuteAsync(insertOperation);
         }
@@ -36,11 +36,11 @@ namespace Insomnia.Core.Database
             return await table.ExecuteAsync(deleteOperation);
         }
 
-        public async Task<TableResult> Select(string tableName, RaiderEntity raider)
+        public async Task<TableResult> Select<T>(string tableName, string partitionKey, string rowKey) where T : ITableEntity
         {
             var table = _client.GetTableReference(tableName);
 
-            var retrieveOperation = TableOperation.Retrieve<RaiderEntity>(raider.PartitionKey, raider.RowKey);
+            var retrieveOperation = TableOperation.Retrieve<T>(partitionKey, rowKey);
 
             return await table.ExecuteAsync(retrieveOperation);
         }

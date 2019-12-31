@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Raider } from '../raider/raider';
-import { RaiderDkpService } from '../raider/raider-dkp.service';
+import { RaiderTableService as RaiderDkpService } from '../raider/raider-table.service';
 
 @Component({
   selector: 'app-home',

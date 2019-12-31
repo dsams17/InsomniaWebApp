@@ -19,18 +19,20 @@ namespace Insomnia.Core.Controllers
             _dkpService = dkpService;
         }
 
-        [HttpGet]
-        public ActionResult Get()
-        {
-            return Ok("Success");
-        }
-
         [HttpPost]
         public async Task<Raider> Post([FromBody] Raider raider)
         {
-            var entity = new RaiderEntity(raider.Name, raider.CharacterClass.ToString(), raider.Dkp);
+            var entity = new RaiderEntity(raider.Name, raider.CharacterClass, raider.Dkp);
 
             return await _dkpService.InsertRaider(entity);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<Raider>> Get([FromQuery] string characterClass, [FromQuery] string name)
+        {
+            var content = await _dkpService.GetRaider(characterClass, name);
+
+            return new JsonResult(content);
         }
 
         [HttpGet]

@@ -1,8 +1,7 @@
-import { Injectable, PipeTransform } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Raider } from './raider';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { RaiderHttpService } from './raider-http.service';
 import { Observable, BehaviorSubject, of, Subject } from 'rxjs';
-import { DecimalPipe } from '@angular/common';
 import { debounceTime, delay, switchMap, tap } from 'rxjs/operators';
 
 import { SortDirection } from '../table/sortable.directive';
@@ -42,8 +41,7 @@ function sort(raiders: Raider[], column: string, direction: string): Raider[] {
 //}
 
 @Injectable({providedIn: 'root'})
-export class RaiderDkpService {
-  private _raiders: Raider[];
+export class RaiderTableService {
   private _loading$ = new BehaviorSubject<boolean>(true);
   private _search$ = new Subject<void>();
   private _raiders$ = new BehaviorSubject<Raider[]>([]);
@@ -57,8 +55,8 @@ export class RaiderDkpService {
     sortDirection: ''
   };
 
-  constructor(private httpClient: HttpClient, private pipe: DecimalPipe) {
-    this.getRaiders().subscribe((res: Raider[]) => {
+  constructor(private raiderHttpService: RaiderHttpService) {
+    this.raiderHttpService.getRaiders().subscribe((res: Raider[]) => {
         this._search$.pipe(
           tap(() => this._loading$.next(true)),
           debounceTime(200),
@@ -104,8 +102,4 @@ export class RaiderDkpService {
 
     return of({ raiders });
   }
-
-  getRaiders(): Observable<Raider[]> {
-    return this.httpClient.get<Raider[]>("api/dkp/multiple");
-  } 
 }
