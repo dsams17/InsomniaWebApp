@@ -15,6 +15,8 @@ import { NgbdSortableHeader } from "./table/sortable.directive";
 import { RaiderTableService } from "./raider/raider-table.service";
 import { RaiderHttpService } from "./raider/raider-http.service";
 import { DecimalPipe } from "@angular/common";
+import { AdminComponent } from './admin/admin.component';
+import { ItemHistoryComponent } from './item-history/item-history.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { DecimalPipe } from "@angular/common";
     FooterComponent,
     RaiderDetailsComponent,
     NgbdTableComplete,
-    NgbdSortableHeader
+    NgbdSortableHeader,
+    AdminComponent,
+    ItemHistoryComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
