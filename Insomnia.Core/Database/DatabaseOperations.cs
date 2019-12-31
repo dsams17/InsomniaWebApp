@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml;
 using Insomnia.Core.Models;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -45,14 +46,24 @@ namespace Insomnia.Core.Database
             return await table.ExecuteAsync(retrieveOperation);
         }
 
-        public async Task<IEnumerable<RaiderEntity>> SelectAll(string tableName)
+        public async Task<IEnumerable<T>> SelectPartition<T>(string tableName, string partition) where T : ITableEntity, new()
         {
             var table = _client.GetTableReference(tableName);
 
-            var seg = await table.ExecuteQuerySegmentedAsync(new TableQuery<RaiderEntity>(), null);
+            var seg = await table.ExecuteQuerySegmentedAsync(new TableQuery<T>().Where(TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partition)), null);
 
             return seg.Results;
         }
+
+        public async Task<IEnumerable<T>> SelectAll<T>(string tableName) where T : ITableEntity, new()
+        {
+            var table = _client.GetTableReference(tableName);
+
+            var seg = await table.ExecuteQuerySegmentedAsync(new TableQuery<T>(), null);
+
+            return seg.Results;
+        }
+
 
         public async Task<TableResult> Update(string tableName, RaiderEntity raider)
         {

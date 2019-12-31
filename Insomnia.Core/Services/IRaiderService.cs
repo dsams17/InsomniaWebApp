@@ -3,7 +3,7 @@ using Insomnia.Core.Models;
 
 namespace Insomnia.Core.Services
 {
-    public interface IDkpService
+    public interface IRaiderService
     {
         Task<Raider> InsertRaider(RaiderEntity raider);
         Task<Raider[]> GetRaiders();

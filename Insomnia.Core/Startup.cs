@@ -2,12 +2,10 @@ using Insomnia.Core.Database;
 using Insomnia.Core.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Azure;
 
 namespace Insomnia.Core
 {
@@ -32,8 +30,8 @@ namespace Insomnia.Core
 
             services.AddSingleton<IConnectionConfig, ConnectionConfig>();
             services.AddSingleton<IDatabaseOperations, DatabaseOperations>();
-            services.AddTransient<IDkpService, DkpService>();
-
+            services.AddTransient<IRaiderService, RaiderService>();
+            services.AddTransient<IItemService, ItemService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

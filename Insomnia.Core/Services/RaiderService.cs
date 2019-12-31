@@ -5,11 +5,11 @@ using Insomnia.Core.Models;
 
 namespace Insomnia.Core.Services
 {
-    public class DkpService : IDkpService
+    public class RaiderService : IRaiderService
     {
         private readonly IDatabaseOperations _database;
 
-        public DkpService(IDatabaseOperations database)
+        public RaiderService(IDatabaseOperations database)
         {
             _database = database;
         }
@@ -29,7 +29,7 @@ namespace Insomnia.Core.Services
 
         public async Task<Raider[]> GetRaiders()
         {
-            var result = await _database.SelectAll("Raider");
+            var result = await _database.SelectAll<RaiderEntity>("Raider");
 
             return result.Select(x => new Raider
             {
@@ -42,6 +42,14 @@ namespace Insomnia.Core.Services
         public async Task<Raider> GetRaider(string characterClass, string name)
         {
             var raiderEntity = await _database.Select<RaiderEntity>("Raider", characterClass, name);
+            var itemsEntity = await _database.SelectPartition<DkpItemEntity>("Item", name);
+
+            var items = itemsEntity.Select(x => new DkpItem
+            {
+                DkpCost = x.DkpCost,
+                DateAcquired = x.DateAcquired,
+                ItemName = x.ItemName
+            }).ToArray();
 
             var res = (RaiderEntity) raiderEntity.Result;
 
@@ -49,7 +57,8 @@ namespace Insomnia.Core.Services
             {
                 Name = res.RowKey,
                 CharacterClass = res.PartitionKey,
-                Dkp = res.Dkp
+                Dkp = res.Dkp,
+                DkpItems = items
             };
         }
     }

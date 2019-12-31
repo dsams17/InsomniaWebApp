@@ -14,10 +14,10 @@ export class RaiderHttpService {
   }
 
   getRaider(name: string, characterClass: string): Observable<Raider> {
-    return this.httpClient.get<Raider>(`api/dkp?name=${name}&characterClass=${characterClass}`);
+    return this.httpClient.get<Raider>(`api/raider?name=${name}&characterClass=${characterClass}`);
   }
 
   getRaiders(): Observable<Raider[]> {
-    return this.httpClient.get<Raider[]>("api/dkp/multiple");
+    return this.httpClient.get<Raider[]>("api/raider/multiple");
   }
 }

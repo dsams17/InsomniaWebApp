@@ -1,5 +1,5 @@
 export class DkpItem {
   itemName: string;
-  itemCost: number;
+  dkpCost: number;
   dateAcquired: Date;
 }

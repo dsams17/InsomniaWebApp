@@ -16,7 +16,8 @@ export class RaiderDetailsComponent {
               private route: ActivatedRoute) { }
 
 
-  raider : Raider;
+  raider: Raider;
+  isLoaded: boolean;
 
   ngOnInit() {
     this.getRaider();
@@ -27,7 +28,10 @@ export class RaiderDetailsComponent {
     var name = this.route.snapshot.paramMap.get('name');
     var charClass = this.route.snapshot.queryParamMap.get('charClass');
     this.raiderService.getRaider(name, charClass)
-      .subscribe((res: Raider) => { this.raider = res; },
+      .subscribe((res: Raider) => {
+          this.raider = res;
+          this.isLoaded = true;
+        },
                   err => { console.log(err); });
   }
 

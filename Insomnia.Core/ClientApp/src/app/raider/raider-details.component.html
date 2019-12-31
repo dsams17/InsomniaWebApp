@@ -1,6 +1,15 @@
 <body>
-<h1>Name: {{raider.name}}</h1>
-<h2>Class: {{raider.characterClass}}</h2>
-<h2>DKP: {{raider.dkp}}</h2>
-<h3>DKP History: Coming Soon</h3>
+  <h1>Raider Name: {{raider.name}}</h1>
+  <table class="table table-bordered table-striped">
+    <tr>
+      <th>Item Name</th>
+      <th>DKP Cost</th>
+      <th>Date and Time Acquired (CST)</th>
+    </tr>
+    <tr *ngFor="let item of raider.dkpItems">
+      <td>{{item.itemName}}</td>
+      <td>{{item.dkpCost}}</td>
+      <td>{{item.dateAcquired}}</td>
+    </tr>
+  </table>
 </body>

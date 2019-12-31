@@ -5,12 +5,12 @@ namespace Insomnia.Core.Models
 {
     public class DkpItemEntity : TableEntity
     {
-        public DkpItemEntity(string name, string raiderClass, int dkpCost, string itemName, DateTime dateAcquired)
+        public DkpItemEntity(string raiderName, int dkpCost, string itemName, DateTime dateAcquired)
         {
-            PartitionKey = raiderClass;
-            RowKey = name;
+            PartitionKey = raiderName;
+            RowKey = Guid.NewGuid().ToString("N");
             DkpCost = dkpCost;
-            ItemName = ItemName;
+            ItemName = itemName;
             DateAcquired = dateAcquired;
         }
 
