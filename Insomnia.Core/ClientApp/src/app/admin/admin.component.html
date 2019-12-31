@@ -1,1 +1,25 @@
-<p>admin works!</p>
+<body>
+  <div class="row">
+    <div class="col-4 mb-2"></div>
+    <div class="col-4 mb-2">
+      <h1 align="center">Current Raiders</h1>
+    </div>
+    <div class="col-4 mb-2"></div>
+</div>
+<div class="row">
+  <div class="col mb-3" *ngFor="let button of buttons;let index = index;">
+    <button class="btn btn-block" (click)="onClick(index)" [style.background-color]="button.clicked ? 'green' : 'gray'" name="raiderButton">{{button.raider.name}}</button>
+  </div>
+</div>
+<div class="row">
+  <div class="col-4 mb-2"></div>
+  <div class="col-4 mb-2">
+    <h2 align="center">Options</h2>
+    <button class="btn btn-block" name="addDkpButton">Add DKP to selected</button>
+    <button class="btn btn-block" name="addDkpButton">Decay selected</button>
+    <button class="btn btn-block" name="addDkpButton">Add New Raider</button>
+  </div>
+  <div class="col-4 mb-2"></div>
+</div>
+</body>
+

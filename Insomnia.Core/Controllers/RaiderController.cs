@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Insomnia.Core.Models;
 using Insomnia.Core.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Insomnia.Core.Controllers
 {
@@ -9,11 +11,13 @@ namespace Insomnia.Core.Controllers
     [Route("api/[controller]")]
     public class RaiderController : ControllerBase
     {
+        private readonly IMemoryCache _cache;
         private readonly IItemService _itemService;
         private readonly IRaiderService _raiderService;
 
-        public RaiderController(IItemService itemService, IRaiderService raiderService)
+        public RaiderController(IMemoryCache cache, IItemService itemService, IRaiderService raiderService)
         {
+            _cache = cache;
             _itemService = itemService;
             _raiderService = raiderService;
         }
@@ -22,6 +26,8 @@ namespace Insomnia.Core.Controllers
         public async Task<Raider> Post([FromBody] Raider raider)
         {
             var entity = new RaiderEntity(raider.Name, raider.CharacterClass, raider.Dkp);
+
+            _cache.Remove("ALL");
 
             return await _raiderService.InsertRaider(entity);
         }
@@ -47,9 +53,22 @@ namespace Insomnia.Core.Controllers
         [Route("multiple")]
         public async Task<ActionResult<Raider[]>> GetAll()
         {
-            var content = await _raiderService.GetRaiders();
+            
+            // Look for cache key.
+            if (!_cache.TryGetValue("ALL", out var cacheEntry))
+            {
+                // Key not in cache, so get data.
+                cacheEntry = await _raiderService.GetRaiders();
 
-            return new JsonResult(content);
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+
+                // Save data in cache.
+                _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 10, 0)));
+            }
+
+            return new JsonResult(cacheEntry);
         }
     }
 }
