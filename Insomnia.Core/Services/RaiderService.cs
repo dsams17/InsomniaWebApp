@@ -1,37 +1,105 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Insomnia.Core.Database;
 using Insomnia.Core.Models;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Insomnia.Core.Services
 {
     public class RaiderService : IRaiderService
     {
         private readonly IDatabaseOperations _database;
+        private readonly IMemoryCache _cache;
 
-        public RaiderService(IDatabaseOperations database)
+        public RaiderService(IDatabaseOperations database, IMemoryCache cache)
         {
             _database = database;
+            _cache = cache;
         }
         public async Task<Raider> InsertRaider(RaiderEntity raider)
         {
-            var result = await _database.Insert<RaiderEntity>("Raider", raider);
+            var addResult = await _database.Insert("Raider", raider);
 
-            var entity = (RaiderEntity)result.Result;
+            var entity = (RaiderEntity)addResult.Result;
 
-            return new Raider
+            var newRaider = new Raider
             {
                 CharacterClass = entity.PartitionKey,
                 Dkp = entity.Dkp,
                 Name = entity.RowKey
             };
+
+            
+            // Key not in cache, so get data.
+            var cacheEntry = await _database.SelectAll<RaiderEntity>("Raider");
+
+            // Set cache options.
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+
+            // Save data in cache.
+            _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 10, 0)));
+
+
+
+            return newRaider;
+        }
+
+        public async Task<Raider[]> DecayRaiders(decimal percentage)
+        {
+            // Look for cache key.
+            if (!_cache.TryGetValue("ALL", out IEnumerable<RaiderEntity> allRaiders))
+            {
+                // Key not in cache, so get data.
+                allRaiders = await _database.SelectAll<RaiderEntity>("Raider");
+            }
+
+            foreach (var raider in allRaiders)
+            {
+                if (raider.Dkp < 1) continue;
+
+                var decimalDkp = raider.Dkp * percentage;
+                raider.Dkp = decimal.ToInt32(decimalDkp);
+            }
+
+            var cacheEntry = await _database.UpdateMany<RaiderEntity>("Raider", allRaiders);
+
+            // Set cache options.
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+
+            // Save data in cache.
+            _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 10, 0)));
+
+            return cacheEntry.Select(x => new Raider
+            {
+                CharacterClass = x.PartitionKey,
+                Dkp = x.Dkp,
+                Name = x.RowKey
+            }).ToArray();
         }
 
         public async Task<Raider[]> GetRaiders()
         {
-            var result = await _database.SelectAll<RaiderEntity>("Raider");
 
-            return result.Select(x => new Raider
+            // Look for cache key.
+            if (!_cache.TryGetValue("ALL", out IEnumerable<RaiderEntity> cacheEntry))
+            {
+                // Key not in cache, so get data.
+                cacheEntry = await _database.SelectAll<RaiderEntity>("Raider");
+
+                // Set cache options.
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+
+                // Save data in cache.
+                _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 10, 0)));
+            }
+
+            return cacheEntry.Select(x => new Raider
             {
                 CharacterClass = x.PartitionKey,
                 Dkp = x.Dkp,

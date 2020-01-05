@@ -12,14 +12,17 @@
   </div>
 </div>
 <div class="row">
-  <div class="col-4 mb-2"></div>
-  <div class="col-4 mb-2">
-    <h2 align="center">Options</h2>
-    <button class="btn btn-block" name="addDkpButton">Add DKP to selected</button>
-    <button class="btn btn-block" name="addDkpButton">Decay selected</button>
-    <button class="btn btn-block" name="addDkpButton">Add New Raider</button>
+  <div class="col-5 mb-2">
+    <h2 align="center">Group Operations</h2>
+    <button class="btn btn-block"  name="addDkpButton">Add DKP to Selected</button>
+    <button class="btn btn-block" (click)="clickDecayRaiders()" name="addDkpButton">Decay All Raiders</button>
   </div>
-  <div class="col-4 mb-2"></div>
+  <div class="col-2 mb-2"></div>
+  <div class="col-5 mb-2">
+    <h2 align="center">Single Raider Operations</h2>
+    <button class="btn btn-block" (click)="clickAddRaider()" name="addDkpButton">Add New Raider</button>
+    <button class="btn btn-block" name="addDkpButton">Give Item to Selected</button>
+  </div>
 </div>
 </body>
 

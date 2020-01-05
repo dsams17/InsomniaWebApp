@@ -7,6 +7,7 @@ namespace Insomnia.Core.Services
     {
         Task<Raider> InsertRaider(RaiderEntity raider);
         Task<Raider[]> GetRaiders();
+        Task<Raider[]> DecayRaiders(decimal percentage);
         Task<Raider> GetRaider(string characterClass, string name);
     }
 }

@@ -15,8 +15,9 @@ import { NgbdSortableHeader } from "./table/sortable.directive";
 import { RaiderTableService } from "./raider/raider-table.service";
 import { RaiderHttpService } from "./raider/raider-http.service";
 import { DecimalPipe } from "@angular/common";
-import { AdminComponent } from './admin/admin.component';
+import { AdminComponent, AddRaiderModal, DecayRaidersModal } from './admin/admin.component';
 import { ItemHistoryComponent } from './item-history/item-history.component';
+import { DataChangedService } from './data-changed.service';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,9 @@ import { ItemHistoryComponent } from './item-history/item-history.component';
     NgbdTableComplete,
     NgbdSortableHeader,
     AdminComponent,
-    ItemHistoryComponent
+    ItemHistoryComponent,
+    AddRaiderModal,
+    DecayRaidersModal
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -38,7 +41,8 @@ import { ItemHistoryComponent } from './item-history/item-history.component';
     AppRoutingModule,
     NgbModule
   ],
-  providers: [RaiderTableService, RaiderHttpService, DecimalPipe],
-  bootstrap: [AppComponent]
+  providers: [RaiderTableService, RaiderHttpService, DecimalPipe, DataChangedService],
+  bootstrap: [AppComponent],
+  entryComponents: [AddRaiderModal, DecayRaidersModal]
 })
 export class AppModule { }

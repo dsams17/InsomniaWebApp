@@ -56,19 +56,25 @@ export class RaiderTableService {
   };
 
   constructor(private raiderHttpService: RaiderHttpService) {
-    this.raiderHttpService.getRaiders().subscribe((res: Raider[]) => {
-        this._search$.pipe(
-          tap(() => this._loading$.next(true)),
-          debounceTime(200),
-          switchMap(() => this._search(res)),
-          delay(200),
-          tap(() => this._loading$.next(false))
-        ).subscribe((result: ISearchResult) => {
-          this._raiders$.next(result.raiders);
-          //this._total$.next(result.total);
-        });
+    this.raiderHttpService.allRaiders.subscribe((OGres: Observable<Raider[]>) => {
+      OGres.subscribe((res: Raider[]) => {
+        console.log("Table service");
+        console.log(res);
+        this._raiders$.next(res);
+          this._search$.pipe(
+            tap(() => this._loading$.next(true)),
+            debounceTime(200),
+            switchMap(() => this._search(res)),
+            delay(200),
+            tap(() => this._loading$.next(false))
+          ).subscribe((result: ISearchResult) => {
+            
+            //this._total$.next(result.total);
+          });
 
-        this._search$.next(); },
+          this._search$.next();
+        });
+      },
       err => {console.log(err)});
   }
 

@@ -13,7 +13,7 @@ namespace Insomnia.Core.Database
         Task<IEnumerable<T>> SelectPartition<T>(string tableName, string partition) where T : ITableEntity, new();
         Task<IEnumerable<T>> SelectAll<T>(string table) where T : ITableEntity, new();
         Task<TableResult> Update(string table, RaiderEntity raider);
-        Task<TableResult[]> UpdateMany(string table, IEnumerable<RaiderEntity> raiders);
+        Task<IEnumerable<T>> UpdateMany<T>(string table, IEnumerable<T> raiders) where T : class, ITableEntity, new();
 
     }
 }

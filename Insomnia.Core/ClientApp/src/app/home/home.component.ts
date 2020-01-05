@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Raider } from '../raider/raider';
-import { RaiderTableService as RaiderDkpService } from '../raider/raider-table.service';
 
 @Component({
   selector: 'app-home',
@@ -9,7 +7,8 @@ import { RaiderTableService as RaiderDkpService } from '../raider/raider-table.s
 })
 export class HomeComponent {
 
-  constructor(private raiderService: RaiderDkpService) {}
+  constructor() {
+  }
 
 
   ngOnInit() {

@@ -11,7 +11,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let raider of raiders$ | async">
+    <tr *ngFor="let raider of raiders">
       <td>
         <!--<ngb-highlight [result]="raider.name" [term]="service.searchTerm"></ngb-highlight>-->
         <a routerLink="/raiderdetail/{{raider.name}}" [queryParams]="{charClass: raider.characterClass}">{{raider.name}}</a>

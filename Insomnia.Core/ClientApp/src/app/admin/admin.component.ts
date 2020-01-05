@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 import { Raider } from "../raider/raider";
 import { RaiderHttpService } from "../raider/raider-http.service";
+import { DataChangedService } from "../data-changed.service";
 
 class RaiderButton {
   constructor(clicked: boolean, raider: Raider) {
@@ -19,23 +23,155 @@ class RaiderButton {
 export class AdminComponent implements OnInit {
   buttons: RaiderButton[];
 
-  constructor(private raiderService: RaiderHttpService ) { }
+  constructor(private raiderService: RaiderHttpService, private modalService: NgbModal, private changesService: DataChangedService) { }
 
   ngOnInit() {
+    this.getAllRaiders();
+    
+  }
+
+  clickAddRaider() {
+    const modal = this.modalService.open(AddRaiderModal);
+    modal.componentInstance.raider = new Raider("", "", 0, null);
+
+    modal.result.then((res: Raider) => {
+      if (res !== null && res !== undefined) {
+        this.buttons.push(new RaiderButton(false, res));
+        this.changesService.areNewRaiders.next(true);
+      }
+    }).catch(err => console.log(err));
+  }
+
+  clickDecayRaiders() {
+    console.log("decay click");
+    const modal = this.modalService.open(DecayRaidersModal);
+    
+    modal.result.then(res => {
+      if (res !== null && res !== undefined) {
+        console.log("arenew set");
+        this.changesService.areNewRaiders.next(true);
+      }
+    }).catch(err => console.log(err));
+  }
+
+  getAllRaiders() {
     this.raiderService.getRaiders()
       .subscribe((res: Raider[]) => {
           this.buttons = new Array(res.length);
           for (var i = 0; i < this.buttons.length; ++i) {
             this.buttons[i] = new RaiderButton(false, res[i]);
-            console.log(this.buttons[i].raider.name);
           };
         },
         err => { console.log(err); });
-    
   }
 
-
   onClick(index: number) {
+    console.log(this.buttons[index].raider.name);
     this.buttons[index].clicked = !this.buttons[index].clicked;
+  }
+}
+
+
+@Component({
+  selector: 'add-raider-modal-content',
+  template: `
+    <div class="modal-header">
+      <h3 class="modal-title">Add Raider</h3>
+      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-4">
+          <label for="raiderName" style="text-align: right;">Raider Name:</label>
+        </div>
+        <div class="col-8">
+          <input [(ngModel)]="raider.name" id="raiderName" required type="text">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4">
+          <label for="characterClass" style="text-align: right;">Class:</label>
+        </div>
+        <div class="col-8">
+          <input [(ngModel)]="raider.characterClass" id="characterClass" required type="text">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4">
+          <label for="dkp" style="text-align: right;">Starting DKP:</label>
+        </div>
+        <div class="col-8">
+          <input [(ngModel)]="raider.dkp" required id="dkp" type="number">
+        </div>
+      </div>      
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)=addRaider()>Add</button>
+      <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Close</button>
+    </div>
+  `
+})
+export class AddRaiderModal {
+  @Input() raider: Raider;
+
+  constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
+
+  addRaider() {
+    this.raiderService.addRaider(this.raider)
+      .subscribe(res => {
+          this.activeModal.close(res);
+        },
+        err => {
+          this.activeModal.dismiss();
+          console.log(err);
+        });
+
+    this.router.navigate(['/admin']);
+  }
+}
+
+@Component({
+  selector: 'decay-raiders-modal-content',
+  template: `
+    <div class="modal-header">
+      <h3 class="modal-title">Decay Raiders</h3>
+      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-6">
+          <label for="raiderName" style="text-align: right;">Decay Percentage (enter the remainder as a decimal E.G. '.90' would be a 10% decay):</label>
+        </div>
+        <div class="col-6">
+          <input [(ngModel)]="decayPct" id="raiderName" required type="number">
+        </div>
+      </div>     
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)=decayRaiders()>Submit Decay</button>
+      <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Close</button>
+    </div>
+  `
+})
+export class DecayRaidersModal {
+  @Input() decayPct: Number;
+
+  constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
+
+  decayRaiders() {
+    this.raiderService.decayRaiders(this.decayPct)
+      .subscribe(res => {
+          this.activeModal.close(true);
+        },
+        err => {
+          console.log(err);
+          this.activeModal.dismiss();
+        });
+
+    this.router.navigate(['/admin']);
   }
 }

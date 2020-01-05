@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Xml;
 using Insomnia.Core.Models;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
@@ -74,13 +73,15 @@ namespace Insomnia.Core.Database
             return await table.ExecuteAsync(updateOperation);
         }
 
-        public async Task<TableResult[]> UpdateMany(string tableName, IEnumerable<RaiderEntity> raiders)
+        public async Task<IEnumerable<T>> UpdateMany<T>(string tableName, IEnumerable<T> entities) where T : class, ITableEntity, new()
         {
             var table = _client.GetTableReference(tableName);
 
-            var tasks = raiders.Select(x => table.ExecuteAsync(TableOperation.Merge(x)));
+            var tasks = entities.Select(x => table.ExecuteAsync(TableOperation.Merge(x)));
 
-            return await Task.WhenAll(tasks);
+            var results = await Task.WhenAll(tasks);
+
+            return results.Select(x => x.Result as T);
         }
     }
 }

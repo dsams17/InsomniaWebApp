@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\app-routing.module.ts" />
+    <None Remove="ClientApp\src\app\data-changed.service.ts" />
     <None Remove="ClientApp\src\app\raider\dkp-item.ts" />
     <None Remove="ClientApp\src\app\raider\raider-details.ts" />
     <None Remove="ClientApp\src\app\raider\raider-http.service.ts" />
@@ -65,6 +66,7 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\data-changed.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\raider\dkp-item.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\raider\raider-details.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\raider\raider-http.service.ts" />

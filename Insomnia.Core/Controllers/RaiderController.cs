@@ -11,13 +11,11 @@ namespace Insomnia.Core.Controllers
     [Route("api/[controller]")]
     public class RaiderController : ControllerBase
     {
-        private readonly IMemoryCache _cache;
         private readonly IItemService _itemService;
         private readonly IRaiderService _raiderService;
 
-        public RaiderController(IMemoryCache cache, IItemService itemService, IRaiderService raiderService)
+        public RaiderController(IItemService itemService, IRaiderService raiderService)
         {
-            _cache = cache;
             _itemService = itemService;
             _raiderService = raiderService;
         }
@@ -27,9 +25,14 @@ namespace Insomnia.Core.Controllers
         {
             var entity = new RaiderEntity(raider.Name, raider.CharacterClass, raider.Dkp);
 
-            _cache.Remove("ALL");
-
             return await _raiderService.InsertRaider(entity);
+        }
+
+        [HttpPost]
+        [Route("multiple/decay")]
+        public async Task<Raider[]> Post([FromBody] decimal percentage)
+        {
+            return await _raiderService.DecayRaiders(percentage);
         }
 
         [HttpPost]
@@ -53,22 +56,7 @@ namespace Insomnia.Core.Controllers
         [Route("multiple")]
         public async Task<ActionResult<Raider[]>> GetAll()
         {
-            
-            // Look for cache key.
-            if (!_cache.TryGetValue("ALL", out var cacheEntry))
-            {
-                // Key not in cache, so get data.
-                cacheEntry = await _raiderService.GetRaiders();
-
-                // Set cache options.
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-
-                // Save data in cache.
-                _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 10, 0)));
-            }
-
-            return new JsonResult(cacheEntry);
+            return new JsonResult(await _raiderService.GetRaiders());
         }
     }
 }
