@@ -38,4 +38,8 @@ export class RaiderHttpService {
   getRaiders(): Observable<Raider[]> {
     return this.httpClient.get<Raider[]>("api/raider/multiple");
   }
+
+  giveDkp(raidersAndDkp): Observable<Raider[]> {
+    return this.httpClient.post<Raider[]>("api/raider/givedkp", raidersAndDkp);
+  }
 }

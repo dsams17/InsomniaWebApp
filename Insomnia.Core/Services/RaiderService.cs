@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -63,6 +62,43 @@ namespace Insomnia.Core.Services
 
                 var decimalDkp = raider.Dkp * percentage;
                 raider.Dkp = decimal.ToInt32(decimalDkp);
+            }
+
+            var cacheEntry = await _database.UpdateMany<RaiderEntity>("Raider", allRaiders);
+
+            // Set cache options.
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+
+            // Save data in cache.
+            _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 10, 0)));
+
+            return cacheEntry.Select(x => new Raider
+            {
+                CharacterClass = x.PartitionKey,
+                Dkp = x.Dkp,
+                Name = x.RowKey
+            }).ToArray();
+        }
+
+        public async Task<Raider[]> AddDkpToRaiders(AddDkpToRaiders raidersAndDkp)
+        {
+            var add = raidersAndDkp.DkpToAdd;
+            var dict = raidersAndDkp.Raiders.ToDictionary(raider => raider.Name);
+
+            // Look for cache key.
+            if (!_cache.TryGetValue("ALL", out IEnumerable<RaiderEntity> allRaiders))
+            {
+                // Key not in cache, so get data.
+                allRaiders = await _database.SelectAll<RaiderEntity>("Raider");
+            }
+
+            foreach (var raider in allRaiders)
+            {
+                if (dict.TryGetValue(raider.RowKey, out var _))
+                {
+                    raider.Dkp += add;
+                }
             }
 
             var cacheEntry = await _database.UpdateMany<RaiderEntity>("Raider", allRaiders);

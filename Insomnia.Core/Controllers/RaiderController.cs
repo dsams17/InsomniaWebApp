@@ -38,6 +38,14 @@ namespace Insomnia.Core.Controllers
 
         [Authorize]
         [HttpPost]
+        [Route("givedkp")]
+        public async Task<Raider[]> AddDkp([FromBody] AddDkpToRaiders raidersAndDkp)
+        {
+            return await _raiderService.AddDkpToRaiders(raidersAndDkp);
+        }
+
+        [Authorize]
+        [HttpPost]
         [Route("item")]
         public async Task<DkpItem> AddItem([FromBody] DkpItem item)
         {

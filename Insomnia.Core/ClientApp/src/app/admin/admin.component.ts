@@ -22,12 +22,11 @@ class RaiderButton {
 })
 export class AdminComponent implements OnInit {
   buttons: RaiderButton[];
-
+  
   constructor(private raiderService: RaiderHttpService, private modalService: NgbModal, private changesService: DataChangedService) { }
 
   ngOnInit() {
     this.getAllRaiders();
-    
   }
 
   clickAddRaider() {
@@ -54,15 +53,38 @@ export class AdminComponent implements OnInit {
     }).catch(err => console.log(err));
   }
 
+  clickAddDkp() {
+    const modal = this.modalService.open(AddDkpModal);
+    var arr = new Array(0);
+    this.buttons.map(x => {
+      if (x.clicked) {
+        arr.push(x.raider);
+      }
+    });
+    modal.componentInstance.raiders = arr;
+
+    modal.result.then((res: Raider[]) => {
+      if (res !== null && res !== undefined) {
+        this.changesService.areNewRaiders.next(true);
+        this.buttons = this.constructButtons(res);
+      }
+    }).catch(err => console.log(err));
+  }
+
   getAllRaiders() {
     this.raiderService.getRaiders()
       .subscribe((res: Raider[]) => {
-          this.buttons = new Array(res.length);
-          for (var i = 0; i < this.buttons.length; ++i) {
-            this.buttons[i] = new RaiderButton(false, res[i]);
-          };
+          this.buttons = this.constructButtons(res);
         },
         err => { console.log(err); });
+  }
+
+  constructButtons(raiders: Raider[]) {
+    var arr = new Array(raiders.length);
+    for (var i = 0; i < arr.length; ++i) {
+      arr[i] = new RaiderButton(false, raiders[i]);
+    };
+    return arr;
   }
 
   onClick(index: number) {
@@ -166,6 +188,61 @@ export class DecayRaidersModal {
     this.raiderService.decayRaiders(this.decayPct)
       .subscribe(res => {
           this.activeModal.close(true);
+        },
+        err => {
+          console.log(err);
+          this.activeModal.dismiss();
+        });
+
+    this.router.navigate(['/admin']);
+  }
+}
+
+class RaidersDkpAdd {
+  constructor(raiders: Raider[], dkpToAdd: number) {
+    this.dkpToAdd = dkpToAdd;
+    this.raiders = raiders;
+  }
+
+  raiders: Raider[];
+  dkpToAdd: number;
+}
+
+@Component({
+  selector: 'add-dkp-modal-content',
+  template: `
+    <div class="modal-header">
+      <h3 class="modal-title">Add DKP to Raiders</h3>
+      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-6">
+          <label for="raiderName" style="text-align: right;">DKP to add to selected:</label>
+        </div>
+        <div class="col-6">
+          <input [(ngModel)]="pointsToAdd" id="raiderName" required type="number">
+        </div>
+      </div>     
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)=addDkpToRaiders()>Submit Add</button>
+      <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Close</button>
+    </div>
+  `
+})
+export class AddDkpModal {
+  @Input() pointsToAdd: number;
+  @Input() raiders: Raider[];
+
+  constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
+
+  addDkpToRaiders() {
+    this.raiderService.giveDkp(new RaidersDkpAdd(this.raiders, this.pointsToAdd))
+      .subscribe(res => {
+          this.activeModal.close(res);
         },
         err => {
           console.log(err);
