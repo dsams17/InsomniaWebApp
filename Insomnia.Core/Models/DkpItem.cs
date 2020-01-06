@@ -4,6 +4,7 @@ namespace Insomnia.Core.Models
 {
     public class DkpItem
     {
+        public Raider Raider { get; set; }
         public int DkpCost { get; set; }
         public string ItemName { get; set; }
         public DateTime DateAcquired { get; set; }

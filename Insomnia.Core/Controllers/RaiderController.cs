@@ -47,11 +47,9 @@ namespace Insomnia.Core.Controllers
         [Authorize]
         [HttpPost]
         [Route("item")]
-        public async Task<DkpItem> AddItem([FromBody] DkpItem item)
+        public async Task<Raider> AddItem([FromBody] DkpItem item)
         {
-            var entity = new DkpItemEntity("Xede", item.DkpCost, item.ItemName, item.DateAcquired);
-
-            return await _itemService.InsertItem(entity);
+            return await _itemService.InsertItem(item);
         }
 
         [HttpGet]

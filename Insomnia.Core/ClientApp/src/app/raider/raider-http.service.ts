@@ -4,6 +4,7 @@ import { distinctUntilChanged } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { DataChangedService } from "../data-changed.service";
+import { DkpItem } from "./dkp-item";
 
 
 @Injectable({ providedIn: 'root' })
@@ -41,5 +42,9 @@ export class RaiderHttpService {
 
   giveDkp(raidersAndDkp): Observable<Raider[]> {
     return this.httpClient.post<Raider[]>("api/raider/givedkp", raidersAndDkp);
+  }
+
+  giveItem(dkpItem: DkpItem): Observable<Raider> {
+    return this.httpClient.post<Raider>("api/raider/item", dkpItem);
   }
 }

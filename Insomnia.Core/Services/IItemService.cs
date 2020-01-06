@@ -5,8 +5,6 @@ namespace Insomnia.Core.Services
 {
     public interface IItemService
     {
-        Task<DkpItem> InsertItem(DkpItemEntity item);
-        //Task<Raider[]> GetRaiders();
-        //Task<Raider> GetRaider(string characterClass, string name);
+        Task<Raider> InsertItem(DkpItem item);
     }
 }

@@ -15,7 +15,7 @@ import { NgbdSortableHeader } from "./table/sortable.directive";
 import { RaiderTableService } from "./raider/raider-table.service";
 import { RaiderHttpService } from "./raider/raider-http.service";
 import { DecimalPipe } from "@angular/common";
-import { AdminComponent, AddRaiderModal, DecayRaidersModal, AddDkpModal } from './admin/admin.component';
+import { AdminComponent, AddRaiderModal, DecayRaidersModal, AddDkpModal, GiveItemModal } from './admin/admin.component';
 import { ItemHistoryComponent } from './item-history/item-history.component';
 import { DataChangedService } from './data-changed.service';
 import { AuthenticationService } from "./authentication/authentication.service";
@@ -35,6 +35,7 @@ import { ErrorInterceptor } from "./interceptors/http-error.interceptor";
     ItemHistoryComponent,
     AddRaiderModal,
     DecayRaidersModal,
+    GiveItemModal,
     AddDkpModal,
     LoginComponent
   ],
@@ -48,6 +49,6 @@ import { ErrorInterceptor } from "./interceptors/http-error.interceptor";
   ],
   providers: [RaiderTableService, RaiderHttpService, DecimalPipe, DataChangedService, AuthenticationService, /*{provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}*/],
   bootstrap: [AppComponent],
-  entryComponents: [AddRaiderModal, DecayRaidersModal, AddDkpModal]
+  entryComponents: [AddRaiderModal, DecayRaidersModal, AddDkpModal, GiveItemModal]
 })
 export class AppModule { }

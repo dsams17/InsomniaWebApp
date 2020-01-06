@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Raider } from "../raider/raider";
+import { DkpItem } from "../raider/dkp-item";
 import { RaiderHttpService } from "../raider/raider-http.service";
 import { DataChangedService } from "../data-changed.service";
 
@@ -41,13 +42,33 @@ export class AdminComponent implements OnInit {
     }).catch(err => console.log(err));
   }
 
+  clickGiveItem() {
+    const selected = this.buttons.filter(x => x.clicked);
+
+    if (selected.length !== 1) return;
+
+    const modal = this.modalService.open(GiveItemModal);
+    modal.componentInstance.raider = selected[0].raider;
+
+    modal.result.then((res: Raider) => {
+      if (res !== null && res !== undefined) {
+        this.buttons.map(x => {
+          if (x.raider.name === res.name) {
+            x.clicked = false;
+            x.raider.dkp = res.dkp;
+          }
+        });
+        this.changesService.areNewRaiders.next(true);
+      }
+    }).catch(err => console.log(err));
+  }
+
   clickDecayRaiders() {
     console.log("decay click");
     const modal = this.modalService.open(DecayRaidersModal);
     
     modal.result.then(res => {
       if (res !== null && res !== undefined) {
-        console.log("arenew set");
         this.changesService.areNewRaiders.next(true);
       }
     }).catch(err => console.log(err));
@@ -241,6 +262,66 @@ export class AddDkpModal {
 
   addDkpToRaiders() {
     this.raiderService.giveDkp(new RaidersDkpAdd(this.raiders, this.pointsToAdd))
+      .subscribe(res => {
+          this.activeModal.close(res);
+        },
+        err => {
+          console.log(err);
+          this.activeModal.dismiss();
+        });
+
+    this.router.navigate(['/admin']);
+  }
+}
+
+@Component({
+  selector: 'give-item-modal-content',
+  template: `
+    <div class="modal-header">
+      <h3 class="modal-title">Give Item to Raider</h3>
+      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-6">
+          <label for="raiderName" style="text-align: right;">Item Name:</label>
+        </div>
+        <div class="col-6">
+          <input [(ngModel)]="itemName" id="itemName" required type="string">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-6">
+          <label for="raiderName" style="text-align: right;">Item DKP Cost:</label>
+        </div>
+        <div class="col-6">
+          <input [(ngModel)]="dkpCost" id="dkpCost" required type="number">
+        </div>
+      </div>     
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-outline-dark" (click)=giveItemToRaider()>Submit</button>
+      <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Close</button>
+    </div>
+  `
+})
+export class GiveItemModal {
+  @Input() itemName: string;
+  @Input() dkpCost: number;
+  @Input() raider: Raider;
+
+  constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
+
+  giveItemToRaider() {
+    console.log(this.dkpCost);
+
+    var item = new DkpItem();
+    item.raider = this.raider;
+    item.dkpCost = this.dkpCost;
+    item.itemName = this.itemName;
+    this.raiderService.giveItem(item)
       .subscribe(res => {
           this.activeModal.close(res);
         },
