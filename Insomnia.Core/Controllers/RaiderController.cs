@@ -1,9 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Insomnia.Core.Models;
 using Insomnia.Core.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace Insomnia.Core.Controllers
 {
@@ -20,24 +19,27 @@ namespace Insomnia.Core.Controllers
             _raiderService = raiderService;
         }
 
+        [Authorize]
         [HttpPost]
-        public async Task<Raider> Post([FromBody] Raider raider)
+        public async Task<Raider> AddRaider([FromBody] Raider raider)
         {
             var entity = new RaiderEntity(raider.Name, raider.CharacterClass, raider.Dkp);
 
             return await _raiderService.InsertRaider(entity);
         }
 
+        [Authorize]
         [HttpPost]
         [Route("multiple/decay")]
-        public async Task<Raider[]> Post([FromBody] decimal percentage)
+        public async Task<Raider[]> DecayRaiders([FromBody] decimal percentage)
         {
             return await _raiderService.DecayRaiders(percentage);
         }
 
+        [Authorize]
         [HttpPost]
         [Route("item")]
-        public async Task<DkpItem> Post([FromBody] DkpItem item)
+        public async Task<DkpItem> AddItem([FromBody] DkpItem item)
         {
             var entity = new DkpItemEntity("Xede", item.DkpCost, item.ItemName, item.DateAcquired);
 

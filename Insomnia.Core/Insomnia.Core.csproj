@@ -33,7 +33,11 @@
 
   <ItemGroup>
     <None Remove="ClientApp\src\app\app-routing.module.ts" />
+    <None Remove="ClientApp\src\app\authentication\authentication.service.ts" />
+    <None Remove="ClientApp\src\app\authentication\login.component.ts" />
     <None Remove="ClientApp\src\app\data-changed.service.ts" />
+    <None Remove="ClientApp\src\app\guards\auth.guard.ts" />
+    <None Remove="ClientApp\src\app\interceptors\http-error.interceptor.ts" />
     <None Remove="ClientApp\src\app\raider\dkp-item.ts" />
     <None Remove="ClientApp\src\app\raider\raider-details.ts" />
     <None Remove="ClientApp\src\app\raider\raider-http.service.ts" />
@@ -66,7 +70,11 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="ClientApp\src\app\app-routing.module.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\authentication\authentication.service.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\authentication\login.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\data-changed.service.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\guards\auth.guard.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\interceptors\http-error.interceptor.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\raider\dkp-item.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\raider\raider-details.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\raider\raider-http.service.ts" />

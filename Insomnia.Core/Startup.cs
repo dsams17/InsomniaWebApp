@@ -1,5 +1,8 @@
+using System.Threading.Tasks;
 using Insomnia.Core.Database;
 using Insomnia.Core.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
@@ -33,6 +36,19 @@ namespace Insomnia.Core
             services.AddSingleton<IDatabaseOperations, DatabaseOperations>();
             services.AddTransient<IRaiderService, RaiderService>();
             services.AddTransient<IItemService, ItemService>();
+            services.AddTransient<IAuthenticateService, AuthenticateService>();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/api/authenticate";
+                    options.Events.OnRedirectToLogin = (context) =>
+                    {
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    };
+                });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +73,8 @@ namespace Insomnia.Core
             }
 
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

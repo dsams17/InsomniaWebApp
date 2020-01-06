@@ -18,6 +18,9 @@ import { DecimalPipe } from "@angular/common";
 import { AdminComponent, AddRaiderModal, DecayRaidersModal } from './admin/admin.component';
 import { ItemHistoryComponent } from './item-history/item-history.component';
 import { DataChangedService } from './data-changed.service';
+import { AuthenticationService } from "./authentication/authentication.service";
+import { LoginComponent } from "./authentication/login.component";
+import { ErrorInterceptor } from "./interceptors/http-error.interceptor";
 
 @NgModule({
   declarations: [
@@ -31,7 +34,8 @@ import { DataChangedService } from './data-changed.service';
     AdminComponent,
     ItemHistoryComponent,
     AddRaiderModal,
-    DecayRaidersModal
+    DecayRaidersModal,
+    LoginComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -41,7 +45,7 @@ import { DataChangedService } from './data-changed.service';
     AppRoutingModule,
     NgbModule
   ],
-  providers: [RaiderTableService, RaiderHttpService, DecimalPipe, DataChangedService],
+  providers: [RaiderTableService, RaiderHttpService, DecimalPipe, DataChangedService, AuthenticationService, /*{provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}*/],
   bootstrap: [AppComponent],
   entryComponents: [AddRaiderModal, DecayRaidersModal]
 })
