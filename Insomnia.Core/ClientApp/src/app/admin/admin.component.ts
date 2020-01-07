@@ -6,6 +6,7 @@ import { Raider } from "../raider/raider";
 import { DkpItem } from "../raider/dkp-item";
 import { RaiderHttpService } from "../raider/raider-http.service";
 import { DataChangedService } from "../data-changed.service";
+import { CharacterClassEnum } from "../character-class/character-class.enum";
 
 class RaiderButton {
   constructor(clicked: boolean, raider: Raider) {
@@ -69,6 +70,7 @@ export class AdminComponent implements OnInit {
     
     modal.result.then(res => {
       if (res !== null && res !== undefined) {
+        this.buttons = this.constructButtons(res);
         this.changesService.areNewRaiders.next(true);
       }
     }).catch(err => console.log(err));
@@ -138,7 +140,12 @@ export class AdminComponent implements OnInit {
           <label for="characterClass" style="text-align: right;">Class:</label>
         </div>
         <div class="col-8">
-          <input [(ngModel)]="raider.characterClass" id="characterClass" required type="text">
+          <select [(ngModel)]="raider.characterClass">
+            <option *ngFor="let fileType of fileTypes"
+                    [ngValue]="fileType">
+              {{fileType}}
+            </option>
+          </select>
         </div>
       </div>
       <div class="row">
@@ -158,6 +165,8 @@ export class AdminComponent implements OnInit {
 })
 export class AddRaiderModal {
   @Input() raider: Raider;
+  
+  public fileTypes = Object.values(CharacterClassEnum);
 
   constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
 
@@ -187,10 +196,21 @@ export class AddRaiderModal {
     <div class="modal-body">
       <div class="row">
         <div class="col-6">
-          <label for="raiderName" style="text-align: right;">Decay Percentage (enter the remainder as a decimal E.G. '.90' would be a 10% decay):</label>
+          <label for="raiderName" style="text-align: right;">Choose percentage to decay (10% decay means everyone will be left with 90% of initial DKP):</label>
         </div>
         <div class="col-6">
-          <input [(ngModel)]="decayPct" id="raiderName" required type="number">
+          <select [(ngModel)]="decayPct">
+            <option [ngValue]=".95">5%</option>
+            <option [ngValue]=".90">10%</option>
+            <option [ngValue]=".85">15%</option>
+            <option [ngValue]=".80">20%</option>
+            <option [ngValue]=".75">25%</option>
+            <option [ngValue]=".70">30%</option>
+            <option [ngValue]=".65">35%</option>
+            <option [ngValue]=".60">40%</option>
+            <option [ngValue]=".55">45%</option>
+            <option [ngValue]=".50">50%</option>
+          </select>
         </div>
       </div>     
     </div>
@@ -208,7 +228,7 @@ export class DecayRaidersModal {
   decayRaiders() {
     this.raiderService.decayRaiders(this.decayPct)
       .subscribe(res => {
-          this.activeModal.close(true);
+          this.activeModal.close(res);
         },
         err => {
           console.log(err);

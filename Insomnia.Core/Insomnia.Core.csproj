@@ -35,6 +35,7 @@
     <None Remove="ClientApp\src\app\app-routing.module.ts" />
     <None Remove="ClientApp\src\app\authentication\authentication.service.ts" />
     <None Remove="ClientApp\src\app\authentication\login.component.ts" />
+    <None Remove="ClientApp\src\app\character-class\character-class.enum.ts" />
     <None Remove="ClientApp\src\app\data-changed.service.ts" />
     <None Remove="ClientApp\src\app\guards\auth.guard.ts" />
     <None Remove="ClientApp\src\app\interceptors\http-error.interceptor.ts" />
@@ -72,6 +73,7 @@
     <TypeScriptCompile Include="ClientApp\src\app\app-routing.module.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\authentication\authentication.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\authentication\login.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\character-class\character-class.enum.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\data-changed.service.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\guards\auth.guard.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\interceptors\http-error.interceptor.ts" />
