@@ -7,6 +7,7 @@ import { DkpItem } from "../raider/dkp-item";
 import { RaiderHttpService } from "../raider/raider-http.service";
 import { DataChangedService } from "../data-changed.service";
 import { CharacterClassEnum } from "../character-class/character-class.enum";
+import { AuthenticationService } from "../authentication/authentication.service";
 
 class RaiderButton {
   constructor(clicked: boolean, raider: Raider) {
@@ -25,10 +26,15 @@ class RaiderButton {
 export class AdminComponent implements OnInit {
   buttons: RaiderButton[];
   
-  constructor(private raiderService: RaiderHttpService, private modalService: NgbModal, private changesService: DataChangedService) { }
+  constructor(private raiderService: RaiderHttpService, private modalService: NgbModal, private changesService: DataChangedService, private authService: AuthenticationService, private router: Router ) { }
 
   ngOnInit() {
     this.getAllRaiders();
+  }
+
+  clickLogout() {
+    this.authService.logout();
+    this.router.navigate(["/home"]);
   }
 
   clickAddRaider() {
