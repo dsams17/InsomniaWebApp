@@ -3,6 +3,6 @@
     public class AddDkpToRaiders
     {
         public Raider[] Raiders { get; set; }
-        public int DkpToAdd { get; set; }
+        public decimal DkpToAdd { get; set; }
     }
 }
