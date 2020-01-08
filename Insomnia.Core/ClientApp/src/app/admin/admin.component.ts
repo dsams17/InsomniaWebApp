@@ -107,7 +107,11 @@ export class AdminComponent implements OnInit {
     for (var i = 0; i < arr.length; ++i) {
       arr[i] = new RaiderButton(false, raiders[i]);
     };
-    return arr;
+    return arr.sort((a, b) => {
+      if (a.raider.name < b.raider.name) { return -1; }
+      if (a.raider.name > b.raider.name) { return 1; }
+      return 0;
+    });
   }
 
   onClick(index: number) {
