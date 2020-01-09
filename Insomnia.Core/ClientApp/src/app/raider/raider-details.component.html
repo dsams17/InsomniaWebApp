@@ -1,16 +1,19 @@
 <body>
-<h1>Raider Name: {{raider.name}}</h1>
-<h2>Current DKP: {{raider.dkp}}</h2>
-  <table class="table table-bordered table-striped">
-    <tr>
-      <th>Item Name</th>
-      <th>DKP Cost</th>
-      <th>Date and Time Acquired (CST)</th>
-    </tr>
-    <tr *ngFor="let item of raider.dkpItems">
-      <td>{{item.itemName}}</td>
-      <td>{{item.dkpCost}}</td>
-      <td>{{item.dateAcquired}}</td>
-    </tr>
-  </table>
+  <div *ngIf="raider">
+    <h1>Raider Name: {{raider.name}}</h1>
+    <h2>Current DKP: {{raider.dkp}}</h2>
+    <table class="table table-bordered table-striped">
+      <tr>
+        <th>Item Name</th>
+        <th>DKP Cost</th>
+        <th>Date and Time Acquired (CST)</th>
+      </tr>
+
+      <tr *ngFor="let item of raider.dkpItems">
+        <td>{{item.itemName}}</td>
+        <td>{{item.dkpCost}}</td>
+        <td>{{item.dateAcquired}}</td>
+      </tr>
+    </table>
+  </div>
 </body>

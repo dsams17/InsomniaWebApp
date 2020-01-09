@@ -4,7 +4,7 @@ namespace Insomnia.Core.Models
 {
     public class RaiderEntity : TableEntity
     {
-        public RaiderEntity(string name, string raiderClass, decimal dkp)
+        public RaiderEntity(string name, string raiderClass, double dkp)
         {
             PartitionKey = raiderClass;
             RowKey = name;
@@ -15,6 +15,6 @@ namespace Insomnia.Core.Models
         {
         }
 
-        public decimal Dkp { get; set; }
+        public double Dkp { get; set; }
     }
 }

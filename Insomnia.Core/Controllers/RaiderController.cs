@@ -31,7 +31,7 @@ namespace Insomnia.Core.Controllers
         [Authorize]
         [HttpPost]
         [Route("multiple/decay")]
-        public async Task<Raider[]> DecayRaiders([FromBody] decimal percentage)
+        public async Task<Raider[]> DecayRaiders([FromBody] double percentage)
         {
             return await _raiderService.DecayRaiders(percentage);
         }

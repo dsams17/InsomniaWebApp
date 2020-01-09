@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Insomnia.Core.Models;
@@ -77,11 +78,21 @@ namespace Insomnia.Core.Database
         {
             var table = _client.GetTableReference(tableName);
 
-            var tasks = entities.Select(x => table.ExecuteAsync(TableOperation.Merge(x)));
+            try
+            {
+                var tasks = entities.Select(x => table.ExecuteAsync(TableOperation.Merge(x)));
 
-            var results = await Task.WhenAll(tasks);
+                var results = await Task.WhenAll(tasks);
 
-            return results.Select(x => x.Result as T);
+                return results.Select(x => x.Result as T);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            
         }
     }
 }

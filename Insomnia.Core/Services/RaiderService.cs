@@ -47,7 +47,7 @@ namespace Insomnia.Core.Services
             return newRaider;
         }
 
-        public async Task<Raider[]> DecayRaiders(decimal percentage)
+        public async Task<Raider[]> DecayRaiders(double percentage)
         {
             // Look for cache key.
             if (!_cache.TryGetValue("ALL", out IEnumerable<RaiderEntity> allRaiders))
@@ -60,8 +60,8 @@ namespace Insomnia.Core.Services
             {
                 if (raider.Dkp < 1) continue;
 
-                var decimalDkp = raider.Dkp * percentage;
-                raider.Dkp = decimal.ToInt32(decimalDkp);
+                var dkp = raider.Dkp * percentage;
+                raider.Dkp = Math.Truncate(dkp * 100) / 100;
             }
 
             var cacheEntry = await _database.UpdateMany<RaiderEntity>("Raider", allRaiders);

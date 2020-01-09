@@ -4,7 +4,7 @@
     {
         public string Name { get; set; }
         public string CharacterClass { get; set; }
-        public decimal Dkp { get; set; }
+        public double Dkp { get; set; }
         public DkpItem[] DkpItems { get; set; }
     }
 }

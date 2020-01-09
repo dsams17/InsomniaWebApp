@@ -5,7 +5,7 @@ namespace Insomnia.Core.Models
 {
     public class DkpItemEntity : TableEntity
     {
-        public DkpItemEntity(string raiderName, decimal dkpCost, string itemName, DateTime dateAcquired)
+        public DkpItemEntity(string raiderName, double dkpCost, string itemName, DateTime dateAcquired)
         {
             PartitionKey = raiderName;
             RowKey = Guid.NewGuid().ToString("N");
@@ -18,7 +18,7 @@ namespace Insomnia.Core.Models
         {
         }
 
-        public decimal DkpCost { get; set; }
+        public double DkpCost { get; set; }
         public string ItemName { get; set; }
         public DateTime DateAcquired { get; set; }
     }
