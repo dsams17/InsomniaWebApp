@@ -3,6 +3,7 @@ using Insomnia.Core.Models;
 using Insomnia.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Insomnia.Core.Controllers
 {
@@ -12,11 +13,13 @@ namespace Insomnia.Core.Controllers
     {
         private readonly IItemService _itemService;
         private readonly IRaiderService _raiderService;
+        private readonly IMemoryCache _cache;
 
-        public RaiderController(IItemService itemService, IRaiderService raiderService)
+        public RaiderController(IItemService itemService, IRaiderService raiderService, IMemoryCache cache)
         {
             _itemService = itemService;
             _raiderService = raiderService;
+            _cache = cache;
         }
 
         [Authorize]
@@ -65,6 +68,16 @@ namespace Insomnia.Core.Controllers
         public async Task<ActionResult<Raider[]>> GetAll()
         {
             return new JsonResult(await _raiderService.GetRaiders());
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("invalidatecache")]
+        public async Task<ActionResult<Raider[]>> InvalidateAllCache()
+        {
+            _cache.Remove("ALL");
+
+            return await Task.FromResult(new OkResult());
         }
     }
 }

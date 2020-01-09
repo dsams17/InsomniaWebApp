@@ -168,24 +168,30 @@ export class AdminComponent implements OnInit {
       </div>      
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)=addRaider()>Add</button>
+      <button [disabled]="loading" type="button" class="btn btn-outline-dark" (click)=addRaider()>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Add</button>
       <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Close</button>
     </div>
   `
 })
 export class AddRaiderModal {
   @Input() raider: Raider;
+  loading: boolean = false;
   
   public fileTypes = Object.values(CharacterClassEnum);
 
   constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
 
   addRaider() {
+    this.loading = true;
     this.raiderService.addRaider(this.raider)
       .subscribe(res => {
+          this.loading = false;
           this.activeModal.close(res);
         },
         err => {
+          this.loading = false;
           this.activeModal.dismiss();
           console.log(err);
         });
@@ -225,23 +231,29 @@ export class AddRaiderModal {
       </div>     
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)=decayRaiders()>Submit Decay</button>
+      <button [disabled]="loading" type="button" class="btn btn-outline-dark" (click)=decayRaiders()>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Submit Decay</button>
       <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Close</button>
     </div>
   `
 })
 export class DecayRaidersModal {
   @Input() decayPct: Number;
+  loading: boolean = false;
 
   constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
 
   decayRaiders() {
+    this.loading = true;
     this.raiderService.decayRaiders(this.decayPct)
       .subscribe(res => {
+          this.loading = false;
           this.activeModal.close(res);
         },
         err => {
           console.log(err);
+          this.loading = false;
           this.activeModal.dismiss();
         });
 
@@ -279,7 +291,9 @@ class RaidersDkpAdd {
       </div>     
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)=addDkpToRaiders()>Submit Add</button>
+      <button [disabled]="loading" type="button" class="btn btn-outline-dark" (click)=addDkpToRaiders()>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Submit Add</button>
       <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Close</button>
     </div>
   `
@@ -287,19 +301,22 @@ class RaidersDkpAdd {
 export class AddDkpModal {
   @Input() pointsToAdd: number;
   @Input() raiders: Raider[];
+  loading: boolean = false;
 
   constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
 
   addDkpToRaiders() {
+    this.loading = true;
     this.raiderService.giveDkp(new RaidersDkpAdd(this.raiders, this.pointsToAdd))
       .subscribe(res => {
+          this.loading = false;
           this.activeModal.close(res);
         },
         err => {
+          this.loading = false;
           console.log(err);
           this.activeModal.dismiss();
         });
-
     this.router.navigate(['/admin']);
   }
 }
@@ -332,7 +349,9 @@ export class AddDkpModal {
       </div>     
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-outline-dark" (click)=giveItemToRaider()>Submit</button>
+      <button [disabled]="loading" type="button" class="btn btn-outline-dark" (click)=giveItemToRaider()>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Submit</button>
       <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Close</button>
     </div>
   `
@@ -341,10 +360,12 @@ export class GiveItemModal {
   @Input() itemName: string;
   @Input() dkpCost: number;
   @Input() raider: Raider;
+  loading: boolean = false;
 
   constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
 
   giveItemToRaider() {
+    this.loading = true;
     console.log(this.dkpCost);
 
     var item = new DkpItem();
@@ -353,9 +374,11 @@ export class GiveItemModal {
     item.itemName = this.itemName;
     this.raiderService.giveItem(item)
       .subscribe(res => {
+          this.loading = false;
           this.activeModal.close(res);
         },
         err => {
+          this.loading = false;
           console.log(err);
           this.activeModal.dismiss();
         });
