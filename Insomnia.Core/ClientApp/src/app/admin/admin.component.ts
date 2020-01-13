@@ -25,6 +25,7 @@ class RaiderButton {
 })
 export class AdminComponent implements OnInit {
   buttons: RaiderButton[];
+  error: string = null;
   
   constructor(private raiderService: RaiderHttpService, private modalService: NgbModal, private changesService: DataChangedService, private authService: AuthenticationService, private router: Router ) { }
 
@@ -35,9 +36,11 @@ export class AdminComponent implements OnInit {
   clickLogout() {
     this.authService.logout();
     this.router.navigate(["/home"]);
+    this.error = null;
   }
 
   clickAddRaider() {
+    this.error = null;
     const modal = this.modalService.open(AddRaiderModal);
     modal.componentInstance.raider = new Raider("", "", 0, null);
 
@@ -50,9 +53,13 @@ export class AdminComponent implements OnInit {
   }
 
   clickGiveItem() {
+    this.error = null;
     const selected = this.buttons.filter(x => x.clicked);
 
-    if (selected.length !== 1) return;
+    if (selected.length !== 1) {
+      this.error = "Please select exactly one raider when trying to give an item.";
+      return;
+    }
 
     const modal = this.modalService.open(GiveItemModal);
     modal.componentInstance.raider = selected[0].raider;
@@ -71,6 +78,7 @@ export class AdminComponent implements OnInit {
   }
 
   clickDecayRaiders() {
+    this.error = null;
     console.log("decay click");
     const modal = this.modalService.open(DecayRaidersModal);
     
@@ -83,13 +91,20 @@ export class AdminComponent implements OnInit {
   }
 
   clickAddDkp() {
-    const modal = this.modalService.open(AddDkpModal);
+    this.error = null;
     var arr = new Array(0);
     this.buttons.map(x => {
       if (x.clicked) {
         arr.push(x.raider);
       }
     });
+    if (arr.length === 0) {
+      this.error = "Please select at least one raider to add DKP to.";
+      return;
+    }
+
+    const modal = this.modalService.open(AddDkpModal);
+    
     modal.componentInstance.raiders = arr;
 
     modal.result.then((res: Raider[]) => {
@@ -126,6 +141,11 @@ export class AdminComponent implements OnInit {
   }
 }
 
+class AddRaiderError {
+  raiderNameError: string = null;
+  raiderClassError: string = null;
+  raiderDkpError:string = null;
+}
 
 @Component({
   selector: 'add-raider-modal-content',
@@ -143,6 +163,12 @@ export class AdminComponent implements OnInit {
         </div>
         <div class="col-8">
           <input [(ngModel)]="raider.name" id="raiderName" required type="text">
+          <div (ngModel)="error" *ngIf="error?.raiderNameError"
+               class="alert alert-danger">
+            <div>
+              {{error.raiderNameError}}
+            </div>
+          </div>
         </div>
       </div>
       <div class="row">
@@ -151,21 +177,38 @@ export class AdminComponent implements OnInit {
         </div>
         <div class="col-8">
           <select [(ngModel)]="raider.characterClass">
-            <option *ngFor="let fileType of fileTypes"
-                    [ngValue]="fileType">
-              {{fileType}}
+            <option *ngFor="let characterClass of characterClasses"
+                    [ngValue]="characterClass">
+              {{characterClass}}
             </option>
           </select>
+          <div (ngModel)="error" *ngIf="error?.raiderClassError"
+               class="alert alert-danger">
+            <div>
+              {{error.raiderClassError}}
+            </div>
+          </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-4">
           <label for="dkp" style="text-align: right;">Starting DKP:</label>
         </div>
         <div class="col-8">
           <input [(ngModel)]="raider.dkp" required id="dkp" type="number">
+          <div (ngModel)="error" *ngIf="error?.raiderDkpError"
+               class="alert alert-danger">
+            <div>
+              {{error.raiderDkpError}}
+            </div>
+          </div>
         </div>
-      </div>      
+      </div>
+      <div class="row" (ngModel)="requestError" *ngIf="requestError">
+        <div class="alert alert-danger">
+          <div>{{requestError}}</div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button [disabled]="loading" type="button" class="btn btn-outline-dark" (click)=addRaider()>
@@ -178,12 +221,31 @@ export class AdminComponent implements OnInit {
 export class AddRaiderModal {
   @Input() raider: Raider;
   loading: boolean = false;
+  error: AddRaiderError = new AddRaiderError();
+  requestError: string = null;
   
-  public fileTypes = Object.values(CharacterClassEnum);
+  public characterClasses = Object.values(CharacterClassEnum);
 
   constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
 
   addRaider() {
+    this.error.raiderNameError = null;
+    this.error.raiderClassError = null;
+    this.error.raiderDkpError = null;
+    this.requestError = null;
+
+    if (this.raider.dkp === null || this.raider.dkp === undefined || this.raider.dkp < 0) {
+      this.error.raiderDkpError = "Please enter a non-negative starting DKP.";
+    }
+    if (this.raider.characterClass === null || this.raider.characterClass === undefined || this.raider.characterClass.length === 0) {
+      this.error.raiderClassError = "Please select a class.";
+    }
+    if (this.raider.name === null || this.raider.name === undefined || this.raider.name.length === 0) {
+      this.error.raiderNameError = "Please enter a name.";
+    }
+
+    if (this.error.raiderNameError !== null || this.error.raiderClassError !== null || this.error.raiderDkpError !== null) { return }
+
     this.loading = true;
     this.raiderService.addRaider(this.raider)
       .subscribe(res => {
@@ -192,8 +254,9 @@ export class AddRaiderModal {
         },
         err => {
           this.loading = false;
-          this.activeModal.dismiss();
           console.log(err);
+          this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
+          return;
         });
 
     this.router.navigate(['/admin']);
@@ -210,7 +273,7 @@ export class AddRaiderModal {
       </button>
     </div>
     <div class="modal-body">
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-6">
           <label for="raiderName" style="text-align: right;">Choose percentage to decay (10% decay means everyone will be left with 90% of initial DKP):</label>
         </div>
@@ -227,8 +290,19 @@ export class AddRaiderModal {
             <option [ngValue]=".55">45%</option>
             <option [ngValue]=".50">50%</option>
           </select>
+          <div (ngModel)="error" *ngIf="error"
+               class="alert alert-danger">
+            <div>
+              {{error}}
+            </div>
+          </div>
         </div>
-      </div>     
+      </div>
+      <div class="row" (ngModel)="requestError" *ngIf="requestError">
+        <div class="alert alert-danger">
+          <div>{{requestError}}</div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button [disabled]="loading" type="button" class="btn btn-outline-dark" (click)=decayRaiders()>
@@ -241,11 +315,22 @@ export class AddRaiderModal {
 export class DecayRaidersModal {
   @Input() decayPct: Number;
   loading: boolean = false;
+  error: string = null;
+  requestError: string = null;
 
   constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
 
   decayRaiders() {
+    this.requestError = null;
+    this.error = null;
+
+    if (this.decayPct === null || this.decayPct === undefined) {
+      this.error = "Please select a decay percentage.";
+      return;
+    }
+
     this.loading = true;
+
     this.raiderService.decayRaiders(this.decayPct)
       .subscribe(res => {
           this.loading = false;
@@ -254,7 +339,8 @@ export class DecayRaidersModal {
         err => {
           console.log(err);
           this.loading = false;
-          this.activeModal.dismiss();
+          this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
+          return;
         });
 
     this.router.navigate(['/admin']);
@@ -281,14 +367,25 @@ class RaidersDkpAdd {
       </button>
     </div>
     <div class="modal-body">
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-6">
           <label for="raiderName" style="text-align: right;">DKP to add to selected:</label>
         </div>
         <div class="col-6">
-          <input [(ngModel)]="pointsToAdd" id="raiderName" required type="number">
+          <input [(ngModel)]="pointsToAdd" id="dkpToAdd" name="dkpToAdd" required type="number">
+          <div (ngModel)="error" *ngIf="error"
+               class="alert alert-danger">
+            <div>
+              {{error}}
+            </div>
+          </div>
         </div>
-      </div>     
+      </div>
+      <div class="row" (ngModel)="requestError" *ngIf="requestError">
+        <div class="alert alert-danger">
+          <div>{{requestError}}</div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button [disabled]="loading" type="button" class="btn btn-outline-dark" (click)=addDkpToRaiders()>
@@ -299,13 +396,23 @@ class RaidersDkpAdd {
   `
 })
 export class AddDkpModal {
-  @Input() pointsToAdd: number;
+  @Input() pointsToAdd: number = 0;
   @Input() raiders: Raider[];
   loading: boolean = false;
+  error: string;
+  requestError: string = null;
 
   constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
 
   addDkpToRaiders() {
+    this.error = null;
+    this.requestError = null;
+
+    if (this.pointsToAdd < 1) {
+      this.error = "Please enter a positive number of DKP to add.";
+      return;
+    }
+
     this.loading = true;
     this.raiderService.giveDkp(new RaidersDkpAdd(this.raiders, this.pointsToAdd))
       .subscribe(res => {
@@ -315,10 +422,16 @@ export class AddDkpModal {
         err => {
           this.loading = false;
           console.log(err);
-          this.activeModal.dismiss();
+          this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
+          return;
         });
     this.router.navigate(['/admin']);
   }
+}
+
+class GiveItemError {
+  itemNameError: string = null;
+  costError: string = null;
 }
 
 @Component({
@@ -337,16 +450,33 @@ export class AddDkpModal {
         </div>
         <div class="col-6">
           <input [(ngModel)]="itemName" id="itemName" required type="string">
+          <div (ngModel)="error" *ngIf="error?.itemNameError"
+               class="alert alert-danger">
+            <div>
+              {{error.itemNameError}}
+            </div>
+          </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row mb-3">
         <div class="col-6">
           <label for="raiderName" style="text-align: right;">Item DKP Cost:</label>
         </div>
         <div class="col-6">
           <input [(ngModel)]="dkpCost" id="dkpCost" required type="number">
+          <div (ngModel)="error" *ngIf="error?.costError"
+               class="alert alert-danger">
+            <div>
+              {{error.costError}}
+            </div>
+          </div>
         </div>
-      </div>     
+      </div>
+      <div class="row" (ngModel)="requestError" *ngIf="requestError">
+        <div class="alert alert-danger">
+          <div>{{requestError}}</div>
+        </div>
+      </div>
     </div>
     <div class="modal-footer">
       <button [disabled]="loading" type="button" class="btn btn-outline-dark" (click)=giveItemToRaider()>
@@ -361,12 +491,26 @@ export class GiveItemModal {
   @Input() dkpCost: number;
   @Input() raider: Raider;
   loading: boolean = false;
+  error: GiveItemError = new GiveItemError();
+  requestError: string = null;
 
   constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
 
   giveItemToRaider() {
+    this.requestError = null;
+    this.error.costError = null;
+    this.error.itemNameError = null;
+
+    if (this.dkpCost === null || this.dkpCost === undefined || this.dkpCost < 1) {
+      this.error.costError = "Please enter a positive DKP cost for the item.";
+    }
+    if (this.itemName === null || this.itemName === undefined || this.itemName.length === 0) {
+      this.error.itemNameError = "Please enter an item name.";
+    }
+
+    if (this.error.costError !== null || this.error.itemNameError !== null) { return }
+
     this.loading = true;
-    console.log(this.dkpCost);
 
     var item = new DkpItem();
     item.raider = this.raider;
@@ -380,7 +524,8 @@ export class GiveItemModal {
         err => {
           this.loading = false;
           console.log(err);
-          this.activeModal.dismiss();
+          this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
+          return;
         });
 
     this.router.navigate(['/admin']);

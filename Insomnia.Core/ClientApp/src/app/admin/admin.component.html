@@ -11,17 +11,27 @@
     <button class="btn" style="white-space: nowrap;" (click)="onClick(index)" [style.background-color]="button.clicked ? 'green' : 'gray'" name="raiderButton">{{button.raider.name}}<br/>{{button.raider.dkp}} DKP</button>
   </div>
 </div>
+<div class="row" (ngModel)="error" *ngIf="error">
+  <div class="col-12">
+    <div (ngModel)="error" *ngIf="error"
+         class="alert alert-danger">
+      <div style="text-align: center;">
+        {{error}}
+      </div>
+    </div>
+  </div>
+</div>
 <div class="row">
   <div class="col-5 mb-2">
     <h2 align="center">Group Operations</h2>
-    <button class="btn btn-block" (click)="clickAddDkp()"  name="addDkpButton">Add DKP to Selected</button>
+    <button class="btn btn-block" (click)="clickAddDkp()" name="addDkpButton">Add DKP to Selected</button>
     <button class="btn btn-block" (click)="clickDecayRaiders()" name="decayRaidersButton">Decay All Raiders</button>
   </div>
   <div class="col-2 mb-2"></div>
   <div class="col-5 mb-2">
     <h2 align="center">Single Raider Operations</h2>
     <button class="btn btn-block" (click)="clickAddRaider()" name="addRaiderButton">Add New Raider</button>
-    <button class="btn btn-block" (click)="clickGiveItem()" name="giveItemButton">Give Item to Selected (ONE AT A TIME)</button>
+    <button class="btn btn-block" (click)="clickGiveItem()" name="giveItemButton">Give Item to Selected</button>
   </div>
 </div>
 <div class="row">
