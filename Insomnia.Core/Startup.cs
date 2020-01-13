@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using Insomnia.Core.Database;
 using Insomnia.Core.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
