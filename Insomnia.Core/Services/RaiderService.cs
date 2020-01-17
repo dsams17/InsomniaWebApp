@@ -40,7 +40,7 @@ namespace Insomnia.Core.Services
                 .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
 
             // Save data in cache.
-            _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 10, 0)));
+            _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 1, 0)));
 
 
 
@@ -71,7 +71,7 @@ namespace Insomnia.Core.Services
                 .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
 
             // Save data in cache.
-            _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 10, 0)));
+            _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 1, 0)));
 
             return cacheEntry.Select(x => new Raider
             {
@@ -108,7 +108,7 @@ namespace Insomnia.Core.Services
                 .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
 
             // Save data in cache.
-            _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 10, 0)));
+            _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 1, 0)));
 
             return cacheEntry.Select(x => new Raider
             {
@@ -132,7 +132,7 @@ namespace Insomnia.Core.Services
                     .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
 
                 // Save data in cache.
-                _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 10, 0)));
+                _cache.Set("ALL", cacheEntry, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 1, 0)));
             }
 
             return cacheEntry.Select(x => new Raider
