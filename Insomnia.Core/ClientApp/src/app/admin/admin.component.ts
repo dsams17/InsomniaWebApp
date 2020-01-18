@@ -408,7 +408,7 @@ export class AddDkpModal {
     this.error = null;
     this.requestError = null;
 
-    if (this.pointsToAdd < 1) {
+    if (this.pointsToAdd < 0) {
       this.error = "Please enter a positive number of DKP to add.";
       return;
     }
@@ -501,7 +501,7 @@ export class GiveItemModal {
     this.error.costError = null;
     this.error.itemNameError = null;
 
-    if (this.dkpCost === null || this.dkpCost === undefined || this.dkpCost < 1) {
+    if (this.dkpCost === null || this.dkpCost === undefined || this.dkpCost < 0) {
       this.error.costError = "Please enter a positive DKP cost for the item.";
     }
     if (this.itemName === null || this.itemName === undefined || this.itemName.length === 0) {
