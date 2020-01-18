@@ -10,6 +10,7 @@ import { DkpItem } from "./dkp-item";
 @Injectable({ providedIn: 'root' })
 export class RaiderHttpService {
   allRaiders: BehaviorSubject<Observable<Raider[]>> = new BehaviorSubject<Observable<Raider[]>>(new Observable);
+  allItems: BehaviorSubject<Observable<DkpItem[]>> = new BehaviorSubject<Observable<DkpItem[]>>(new Observable);
 
 
   constructor(private httpClient: HttpClient, private dataChangedService: DataChangedService) {
@@ -17,6 +18,12 @@ export class RaiderHttpService {
       console.log("Client update");
       this.allRaiders.next(this.getRaiders());
       this.dataChangedService.areNewRaiders.next(false);
+    });
+
+    this.dataChangedService.areNewItems.pipe(distinctUntilChanged()).subscribe(value => {
+      console.log("Client item update");
+      this.allItems.next(this.getItems());
+      this.dataChangedService.areNewItems.next(false);
     });
   }
 
@@ -46,5 +53,9 @@ export class RaiderHttpService {
 
   giveItem(dkpItem: DkpItem): Observable<Raider> {
     return this.httpClient.post<Raider>("api/raider/item", dkpItem);
+  }
+
+  getItems(): Observable<DkpItem[]> {
+    return this.httpClient.get<DkpItem[]>("api/raider/item");
   }
 }

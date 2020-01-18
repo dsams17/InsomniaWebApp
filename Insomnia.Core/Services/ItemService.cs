@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Insomnia.Core.Database;
 using Insomnia.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Insomnia.Core.Services
@@ -64,6 +65,35 @@ namespace Insomnia.Core.Services
                 Dkp = raiderEntity.Dkp,
                 CharacterClass = raiderEntity.PartitionKey
             };
+        }
+
+        public async Task<DkpItem[]> GetAllItems()
+        {
+            // Look for cache key.
+            if (!_cache.TryGetValue("ALLITEM", out DkpItem[] allItems))
+            {
+                var allItemsEntities = await _database.SelectAll<DkpItemEntity>("Item");
+
+                allItems = allItemsEntities.Select(x => new DkpItem
+                {
+                    DateAcquired = x.DateAcquired,
+                    DkpCost = x.DkpCost,
+                    ItemName = x.ItemName,
+                    Raider = new Raider
+                    {
+                        Name = x.PartitionKey
+                    }
+                }).ToArray();
+            }
+
+            // Set cache options.
+            var cacheEntryOptions = new MemoryCacheEntryOptions()
+                .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+
+            // Save data in cache.
+            _cache.Set("ALLITEM", allItems, cacheEntryOptions.GetValueOrDefault(new TimeSpan(0, 1, 0)));
+
+            return allItems;
         }
     }
 }

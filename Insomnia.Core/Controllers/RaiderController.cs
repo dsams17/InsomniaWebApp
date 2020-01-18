@@ -81,6 +81,13 @@ namespace Insomnia.Core.Controllers
             return new JsonResult(await _raiderService.GetRaiders());
         }
 
+        [HttpGet]
+        [Route("item")]
+        public async Task<ActionResult<DkpItem[]>> GetAllItems()
+        {
+            return new JsonResult(await _itemService.GetAllItems());
+        }
+
         [Authorize]
         [HttpGet]
         [Route("invalidatecache")]

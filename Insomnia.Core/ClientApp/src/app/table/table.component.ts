@@ -6,11 +6,11 @@ import { Raider } from '../raider/raider';
 import { NgbdSortableHeader, SortEvent } from './sortable.directive';
 
 @Component({
-  selector: 'ngbd-table-complete',
+  selector: 'raider-table-complete',
   templateUrl: './table.component.html',
   styleUrls: ["./table.component.css"]
 })
-export class NgbdTableComplete {
+export class RaiderTableComplete {
   raiders: Raider[];
   //total$: Observable<number>;
   classPicture: { [id: string]: string; } = {};
@@ -49,7 +49,7 @@ export class NgbdTableComplete {
       }
     });
 
-    this.service.sortColumn = column;
-    this.service.sortDirection = direction;
+    this.service.raiderSortColumn = column;
+    this.service.raiderSortDirection = direction;
   }
 }

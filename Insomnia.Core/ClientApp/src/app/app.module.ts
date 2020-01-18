@@ -10,7 +10,8 @@ import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { RaiderDetailsComponent } from './raider/raider-details.component';
-import { NgbdTableComplete } from './table/table.component';
+import { RaiderTableComplete } from './table/table.component';
+import { ItemTableComplete } from './table/item-table.component';
 import { NgbdSortableHeader } from "./table/sortable.directive";
 import { RaiderTableService } from "./raider/raider-table.service";
 import { RaiderHttpService } from "./raider/raider-http.service";
@@ -29,7 +30,8 @@ import { ErrorInterceptor } from "./interceptors/http-error.interceptor";
     HeaderComponent,
     FooterComponent,
     RaiderDetailsComponent,
-    NgbdTableComplete,
+    RaiderTableComplete,
+    ItemTableComplete,
     NgbdSortableHeader,
     AdminComponent,
     ItemHistoryComponent,

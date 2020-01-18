@@ -1,0 +1,47 @@
+<form>
+  <div class="form-group form-inline">
+    Full text search: <input class="form-control ml-2" type="text" name="itemSearchTerm" [(ngModel)]="service.itemSearchTerm" />
+    <span class="ml-3" *ngIf="service.loading$ | async">Loading...</span>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th sortable="itemName" scope="col" (sort)="onSort($event)">
+          Item Name
+        </th>
+        <th scope="col" sortable="raider.name" (sort)="onSort($event)">Character Name</th>
+        <th scope="col" sortable="dkpCost" (sort)="onSort($event)">DKP Cost</th>
+        <th scope="col" sortable="dateAcquired" (sort)="onSort($event)">Date Acquired</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of items">
+        <td>
+          <ngb-highlight [result]="item.itemName" [term]="service.itemSearchTerm"></ngb-highlight>
+        </td>
+        <td>
+          <ngb-highlight [result]="item.raider.name" [term]="service.itemSearchTerm"></ngb-highlight>
+        </td>
+        <td>
+          <ngb-highlight [result]="item.dkpCost" [term]="service.itemSearchTerm"></ngb-highlight>
+        </td>
+        <td>
+          <ngb-highlight [result]="item.dateAcquired" [term]="service.itemSearchTerm"></ngb-highlight>
+        </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="d-flex justify-content-between p-2">
+    <ngb-pagination [collectionSize]="total$ | async" [(page)]="service.itemPage" [pageSize]="service.itemPageSize">
+    </ngb-pagination>
+
+    <select class="custom-select" style="width: auto" name="itemPageSize" [(ngModel)]="service.itemPageSize">
+      <option [ngValue]="25">25 items per page</option>
+      <option [ngValue]="50">50 items per page</option>
+      <option [ngValue]="100">100 items per page</option>
+    </select>
+  </div>
+
+</form> 
