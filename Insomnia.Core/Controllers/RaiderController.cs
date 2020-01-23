@@ -26,11 +26,14 @@ namespace Insomnia.Core.Controllers
         [HttpPost]
         public async Task<ActionResult<Raider>> AddRaider([FromBody] Raider raider)
         {
+            var user = HttpContext.Request.Headers["adminUser"];
+
+            if (string.IsNullOrWhiteSpace(user)) return new BadRequestObjectResult("User must be logged in to do this action.");
             if (string.IsNullOrWhiteSpace(raider.Name) || string.IsNullOrWhiteSpace(raider.CharacterClass) || raider.Dkp < 0) return new BadRequestResult();
 
             var entity = new RaiderEntity(raider.Name, raider.CharacterClass, raider.Dkp);
 
-            return await _raiderService.InsertRaider(entity);
+            return await _raiderService.InsertRaider(entity, user);
         }
 
         [Authorize]
@@ -38,9 +41,12 @@ namespace Insomnia.Core.Controllers
         [Route("multiple/decay")]
         public async Task<ActionResult<Raider[]>> DecayRaiders([FromBody] double percentage)
         {
+            var user = HttpContext.Request.Headers["adminUser"];
+
+            if (string.IsNullOrWhiteSpace(user)) return new BadRequestObjectResult("User must be logged in to do this action.");
             if (percentage <= 0) return new NoContentResult();
 
-            return await _raiderService.DecayRaiders(percentage);
+            return await _raiderService.DecayRaiders(percentage, user);
         }
 
         [Authorize]
@@ -48,10 +54,13 @@ namespace Insomnia.Core.Controllers
         [Route("givedkp")]
         public async Task<ActionResult<Raider[]>> AddDkp([FromBody] AddDkpToRaiders raidersAndDkp)
         {
-            if (raidersAndDkp.Raiders == null) return new BadRequestResult();
-            if (raidersAndDkp.DkpToAdd < 1 || raidersAndDkp.Raiders.Length == 0) return new NoContentResult();
+            var user = HttpContext.Request.Headers["adminUser"];
 
-            return await _raiderService.AddDkpToRaiders(raidersAndDkp);
+            if (string.IsNullOrWhiteSpace(user)) return new BadRequestObjectResult("User must be logged in to do this action.");
+            if (raidersAndDkp.Raiders == null) return new BadRequestResult();
+            if (raidersAndDkp.DkpToAdd <= 0 || raidersAndDkp.Raiders.Length == 0) return new NoContentResult();
+
+            return await _raiderService.AddDkpToRaiders(raidersAndDkp, user);
         }
 
         [Authorize]
@@ -59,9 +68,12 @@ namespace Insomnia.Core.Controllers
         [Route("item")]
         public async Task<ActionResult<Raider>> AddItem([FromBody] DkpItem item)
         {
+            var user = HttpContext.Request.Headers["adminUser"];
+
+            if (string.IsNullOrWhiteSpace(user)) return new BadRequestObjectResult("User must be logged in to do this action.");
             if (string.IsNullOrWhiteSpace(item.ItemName) || item.DkpCost < 0 || item.Raider == null || string.IsNullOrWhiteSpace(item.Raider.Name)) return new BadRequestResult();
 
-            return await _itemService.InsertItem(item);
+            return await _itemService.InsertItem(item, user);
         }
 
         [HttpGet]

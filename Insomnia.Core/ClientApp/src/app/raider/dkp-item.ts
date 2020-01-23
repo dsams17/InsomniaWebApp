@@ -5,4 +5,5 @@ export class DkpItem {
   dkpCost: number;
   raider: Raider;
   dateAcquired: Date;
+  dateToCstString: string;
 }

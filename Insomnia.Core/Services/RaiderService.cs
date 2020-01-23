@@ -18,9 +18,12 @@ namespace Insomnia.Core.Services
             _database = database;
             _cache = cache;
         }
-        public async Task<Raider> InsertRaider(RaiderEntity raider)
+        public async Task<Raider> InsertRaider(RaiderEntity raider, string user)
         {
             var addResult = await _database.Insert("Raider", raider);
+
+            var changeLog = new ChangeEntity(user, $"Added raider {raider.RowKey} of class {raider.PartitionKey} with {raider.Dkp} DKP", DateTime.Now);
+            await _database.Insert("Change", changeLog);
 
             var entity = (RaiderEntity)addResult.Result;
 
@@ -47,7 +50,7 @@ namespace Insomnia.Core.Services
             return newRaider;
         }
 
-        public async Task<Raider[]> DecayRaiders(double percentage)
+        public async Task<Raider[]> DecayRaiders(double percentage, string user)
         {
             // Look for cache key.
             if (!_cache.TryGetValue("ALL", out IEnumerable<RaiderEntity> allRaiders))
@@ -66,6 +69,9 @@ namespace Insomnia.Core.Services
 
             var cacheEntry = await _database.UpdateMany<RaiderEntity>("Raider", allRaiders);
 
+            var changeLog = new ChangeEntity(user, $"Decayed all raiders by {percentage}", DateTime.Now);
+            await _database.Insert("Change", changeLog);
+
             // Set cache options.
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
@@ -81,7 +87,7 @@ namespace Insomnia.Core.Services
             }).ToArray();
         }
 
-        public async Task<Raider[]> AddDkpToRaiders(AddDkpToRaiders raidersAndDkp)
+        public async Task<Raider[]> AddDkpToRaiders(AddDkpToRaiders raidersAndDkp, string user)
         {
             var add = raidersAndDkp.DkpToAdd;
             var dict = raidersAndDkp.Raiders.ToDictionary(raider => raider.Name);
@@ -102,6 +108,11 @@ namespace Insomnia.Core.Services
             }
 
             var cacheEntry = await _database.UpdateMany<RaiderEntity>("Raider", allRaiders);
+
+            var raiderNames = raidersAndDkp.Raiders.Aggregate("", (res, raider) => res += $"{raider.Name}, ", total => total.Trim().TrimEnd(','));
+
+            var changeLog = new ChangeEntity(user, $"Added {raidersAndDkp.DkpToAdd} DKP to raiders {raiderNames}", DateTime.Now);
+            await _database.Insert("Change", changeLog);
 
             // Set cache options.
             var cacheEntryOptions = new MemoryCacheEntryOptions()

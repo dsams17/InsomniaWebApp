@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Raider } from './raider';
 import { distinctUntilChanged } from 'rxjs/operators';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { DataChangedService } from "../data-changed.service";
 import { DkpItem } from "./dkp-item";
@@ -31,12 +31,21 @@ export class RaiderHttpService {
     this.allRaiders.next(this.getRaiders());
   }
 
+  getOptions() {
+    var user = localStorage.getItem("currentUser");
+    return {
+      headers: new HttpHeaders({
+        "adminUser": user
+      })
+    }
+  }
+
   decayRaiders(percentage: Number) {
-    return this.httpClient.post<Raider[]>("api/raider/multiple/decay", percentage);
+    return this.httpClient.post<Raider[]>("api/raider/multiple/decay", percentage, this.getOptions());
   }
 
   addRaider(raider: Raider): Observable<Raider> {
-    return this.httpClient.post<Raider>("api/raider", raider);
+    return this.httpClient.post<Raider>("api/raider", raider, this.getOptions());
   }
 
   getRaider(name: string, characterClass: string): Observable<Raider> {
@@ -48,11 +57,11 @@ export class RaiderHttpService {
   }
 
   giveDkp(raidersAndDkp): Observable<Raider[]> {
-    return this.httpClient.post<Raider[]>("api/raider/givedkp", raidersAndDkp);
+    return this.httpClient.post<Raider[]>("api/raider/givedkp", raidersAndDkp, this.getOptions());
   }
 
   giveItem(dkpItem: DkpItem): Observable<Raider> {
-    return this.httpClient.post<Raider>("api/raider/item", dkpItem);
+    return this.httpClient.post<Raider>("api/raider/item", dkpItem, this.getOptions());
   }
 
   getItems(): Observable<DkpItem[]> {

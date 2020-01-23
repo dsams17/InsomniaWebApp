@@ -19,13 +19,18 @@ namespace Insomnia.Core.Services
             _database = database;
             _cache = cache;
         }
-        public async Task<Raider> InsertItem(DkpItem item)
+        public async Task<Raider> InsertItem(DkpItem item, string user)
         {
             var raider = item.Raider;
 
-            var itemEntity = new DkpItemEntity(raider.Name, item.DkpCost, item.ItemName, DateTime.Now);
+            var utcTime = DateTime.UtcNow;
+            
+            var itemEntity = new DkpItemEntity(raider.Name, item.DkpCost, item.ItemName, utcTime);
 
             await _database.Insert("Item", itemEntity);
+
+            var changeLog = new ChangeEntity(user, $"Gave {item.ItemName} to {item.Raider.Name} for {item.DkpCost} DKP", utcTime);
+            await _database.Insert("Change", changeLog);
 
             //Get raider for this item
             var raiderOp = await _database.Select<RaiderEntity>("Raider", raider.CharacterClass, raider.Name);

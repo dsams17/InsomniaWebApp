@@ -97,6 +97,7 @@ export class RaiderTableService {
 
     this.raiderHttpService.allItems.subscribe((OGres: Observable<DkpItem[]>) => {
       OGres.subscribe((res: DkpItem[]) => {
+        res.map(x => x.dateToCstString = x.dateAcquired.toLocaleString());
           this._search$.pipe(
             tap(() => this._loading$.next(true)),
             debounceTime(200),
