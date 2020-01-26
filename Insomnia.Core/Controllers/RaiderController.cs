@@ -4,6 +4,7 @@ using Insomnia.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace Insomnia.Core.Controllers
 {
@@ -14,12 +15,14 @@ namespace Insomnia.Core.Controllers
         private readonly IItemService _itemService;
         private readonly IRaiderService _raiderService;
         private readonly IMemoryCache _cache;
+        private readonly ILogger<RaiderController> _logger;
 
-        public RaiderController(IItemService itemService, IRaiderService raiderService, IMemoryCache cache)
+        public RaiderController(IItemService itemService, IRaiderService raiderService, IMemoryCache cache, ILogger<RaiderController> logger)
         {
             _itemService = itemService;
             _raiderService = raiderService;
             _cache = cache;
+            _logger = logger;
         }
 
         [Authorize]
