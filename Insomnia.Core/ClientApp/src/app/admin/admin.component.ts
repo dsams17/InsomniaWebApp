@@ -115,6 +115,31 @@ export class AdminComponent implements OnInit {
     }).catch(err => console.log(err));
   }
 
+  clickSubtractDkp() {
+    this.error = null;
+    var arr = new Array(0);
+    this.buttons.map(x => {
+      if (x.clicked) {
+        arr.push(x.raider);
+      }
+    });
+    if (arr.length === 0) {
+      this.error = "Please select at least one raider to subtract DKP from.";
+      return;
+    }
+
+    const modal = this.modalService.open(SubtractDkpModal);
+
+    modal.componentInstance.raiders = arr;
+
+    modal.result.then((res: Raider[]) => {
+      if (res !== null && res !== undefined) {
+        this.changesService.areNewRaiders.next(true);
+        this.buttons = this.constructButtons(res);
+      }
+    }).catch(err => console.log(err));
+  }
+
   getAllRaiders() {
     this.raiderService.getRaiders()
       .subscribe((res: Raider[]) => {
@@ -419,6 +444,78 @@ export class AddDkpModal {
           this.loading = false;
           this.activeModal.close(res);
         },
+        err => {
+          this.loading = false;
+          console.log(err);
+          this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
+          return;
+        });
+    this.router.navigate(['/admin']);
+  }
+}
+
+@Component({
+  selector: 'subtract-dkp-modal-content',
+  template: `
+    <div class="modal-header">
+      <h3 class="modal-title">Subtract DKP from Raiders</h3>
+      <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="row mb-3">
+        <div class="col-6">
+          <label for="raiderName" style="text-align: right;">DKP to subtract from selected:</label>
+        </div>
+        <div class="col-6">
+          <input [(ngModel)]="pointsToSubtract" id="dkpToSubtract" name="dkpToSubtract" required type="number">
+          <div (ngModel)="error" *ngIf="error"
+               class="alert alert-danger">
+            <div>
+              {{error}}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" (ngModel)="requestError" *ngIf="requestError">
+        <div class="alert alert-danger">
+          <div>{{requestError}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button [disabled]="loading" type="button" class="btn btn-outline-dark" (click)=addDkpToRaiders()>
+        <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+        Submit Add</button>
+      <button type="button" class="btn btn-outline-dark" (click)="activeModal.dismiss()">Close</button>
+    </div>
+  `
+})
+export class SubtractDkpModal {
+  @Input() pointsToSubtract: number = 0;
+  @Input() raiders: Raider[];
+  loading: boolean = false;
+  error: string;
+  requestError: string = null;
+
+  constructor(public activeModal: NgbActiveModal, private raiderService: RaiderHttpService, private router: Router) { }
+
+  addDkpToRaiders() {
+    this.error = null;
+    this.requestError = null;
+
+    if (this.pointsToSubtract < 0) {
+      this.error = "Please enter a positive number of DKP to subtract.";
+      return;
+    }
+
+    this.loading = true;
+    this.raiderService.giveDkp(new RaidersDkpAdd(this.raiders, -this.pointsToSubtract))
+      .subscribe(res => {
+        this.loading = false;
+        this.activeModal.close(res);
+      },
         err => {
           this.loading = false;
           console.log(err);

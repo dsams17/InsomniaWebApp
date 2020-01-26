@@ -16,10 +16,11 @@ import { NgbdSortableHeader } from "./table/sortable.directive";
 import { RaiderTableService } from "./raider/raider-table.service";
 import { RaiderHttpService } from "./raider/raider-http.service";
 import { DecimalPipe } from "@angular/common";
-import { AdminComponent, AddRaiderModal, DecayRaidersModal, AddDkpModal, GiveItemModal } from './admin/admin.component';
+import { AdminComponent, AddRaiderModal, DecayRaidersModal, AddDkpModal, SubtractDkpModal, GiveItemModal } from './admin/admin.component';
 import { ItemHistoryComponent } from './item-history/item-history.component';
 import { DataChangedService } from './data-changed.service';
-import { AuthenticationService } from "./authentication/authentication.service";
+
+import { AuthenticationService } from "./authentication/authentication.service"
 import { LoginComponent } from "./authentication/login.component";
 import { ErrorInterceptor } from "./interceptors/http-error.interceptor";
 
@@ -39,6 +40,7 @@ import { ErrorInterceptor } from "./interceptors/http-error.interceptor";
     DecayRaidersModal,
     GiveItemModal,
     AddDkpModal,
+    SubtractDkpModal,
     LoginComponent
   ],
   imports: [
@@ -51,6 +53,6 @@ import { ErrorInterceptor } from "./interceptors/http-error.interceptor";
   ],
   providers: [RaiderTableService, RaiderHttpService, DecimalPipe, DataChangedService, AuthenticationService, /*{provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}*/],
   bootstrap: [AppComponent],
-  entryComponents: [AddRaiderModal, DecayRaidersModal, AddDkpModal, GiveItemModal]
+  entryComponents: [AddRaiderModal, DecayRaidersModal, AddDkpModal, GiveItemModal, SubtractDkpModal]
 })
 export class AppModule { }

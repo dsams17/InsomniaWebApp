@@ -58,7 +58,7 @@ namespace Insomnia.Core.Controllers
 
             if (string.IsNullOrWhiteSpace(user)) return new BadRequestObjectResult("User must be logged in to do this action.");
             if (raidersAndDkp.Raiders == null) return new BadRequestResult();
-            if (raidersAndDkp.DkpToAdd <= 0 || raidersAndDkp.Raiders.Length == 0) return new NoContentResult();
+            if (raidersAndDkp.Raiders.Length == 0) return new NoContentResult();
 
             return await _raiderService.AddDkpToRaiders(raidersAndDkp, user);
         }
