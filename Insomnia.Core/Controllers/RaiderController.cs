@@ -36,7 +36,11 @@ namespace Insomnia.Core.Controllers
 
             var entity = new RaiderEntity(raider.Name, raider.CharacterClass, raider.Dkp);
 
-            return await _raiderService.InsertRaider(entity, user);
+            var res = await _raiderService.InsertRaider(entity, user);
+
+            if (res == null) return new StatusCodeResult(500);
+
+            return new OkObjectResult(res);
         }
 
         [Authorize]
@@ -49,7 +53,11 @@ namespace Insomnia.Core.Controllers
             if (string.IsNullOrWhiteSpace(user)) return new BadRequestObjectResult("User must be logged in to do this action.");
             if (percentage <= 0) return new NoContentResult();
 
-            return await _raiderService.DecayRaiders(percentage, user);
+            var res = await _raiderService.DecayRaiders(percentage, user);
+
+            if (res == null) return StatusCode(500);
+
+            return res;
         }
 
         [Authorize]
@@ -63,7 +71,11 @@ namespace Insomnia.Core.Controllers
             if (raidersAndDkp.Raiders == null) return new BadRequestResult();
             if (raidersAndDkp.Raiders.Length == 0) return new NoContentResult();
 
-            return await _raiderService.AddDkpToRaiders(raidersAndDkp, user);
+            var res = await _raiderService.AddDkpToRaiders(raidersAndDkp, user);
+
+            if (res == null) return StatusCode(500);
+
+            return res;
         }
 
         [Authorize]
@@ -76,7 +88,12 @@ namespace Insomnia.Core.Controllers
             if (string.IsNullOrWhiteSpace(user)) return new BadRequestObjectResult("User must be logged in to do this action.");
             if (string.IsNullOrWhiteSpace(item.ItemName) || item.DkpCost < 0 || item.Raider == null || string.IsNullOrWhiteSpace(item.Raider.Name)) return new BadRequestResult();
 
-            return await _itemService.InsertItem(item, user);
+            var res = await _itemService.InsertItem(item, user);
+
+            if (res == null) return StatusCode(500);
+
+            return res;
+
         }
 
         [HttpGet]
