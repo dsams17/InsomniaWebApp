@@ -45,6 +45,7 @@
     <None Remove="ClientApp\src\app\raider\raider-http.service.ts" />
     <None Remove="ClientApp\src\app\raider\raider.ts" />
     <None Remove="ClientApp\src\app\table\sortable.directive.ts" />
+    <None Remove="ClientApp\src\assets\9d5.png" />
     <None Remove="ClientApp\src\assets\druid_icon.png" />
     <None Remove="ClientApp\src\assets\hunter_icon.png" />
     <None Remove="ClientApp\src\assets\mage_icon.png" />
@@ -58,6 +59,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="ClientApp\src\assets\9d5.png" />
     <Content Include="ClientApp\src\assets\druid_icon.png" />
     <Content Include="ClientApp\src\assets\hunter_icon.png" />
     <Content Include="ClientApp\src\assets\mage_icon.png" />
