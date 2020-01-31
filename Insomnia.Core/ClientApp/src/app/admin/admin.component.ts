@@ -277,11 +277,16 @@ export class AddRaiderModal {
           this.loading = false;
           this.activeModal.close(res);
         },
-        err => {
-          this.loading = false;
-          console.log(err);
-          this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
-          return;
+        (err) => {
+          if (err === 401) {
+            this.requestError = "You are not properly signed in. Please log in again.";
+            return;
+          } else {
+            this.loading = false;
+            console.log(err);
+            this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
+            return;
+          }
         });
 
     this.router.navigate(['/admin']);
@@ -362,10 +367,15 @@ export class DecayRaidersModal {
           this.activeModal.close(res);
         },
         err => {
-          console.log(err);
-          this.loading = false;
-          this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
-          return;
+          if (err === 401) {
+            this.requestError = "You are not properly signed in. Please log in again.";
+            return;
+          } else {
+            this.loading = false;
+            console.log(err);
+            this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
+            return;
+          }
         });
 
     this.router.navigate(['/admin']);
@@ -445,10 +455,15 @@ export class AddDkpModal {
           this.activeModal.close(res);
         },
         err => {
-          this.loading = false;
-          console.log(err);
-          this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
-          return;
+          if (err === 401) {
+            this.requestError = "You are not properly signed in. Please log in again.";
+            return;
+          } else {
+            this.loading = false;
+            console.log(err);
+            this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
+            return;
+          }
         });
     this.router.navigate(['/admin']);
   }
@@ -517,10 +532,15 @@ export class SubtractDkpModal {
         this.activeModal.close(res);
       },
         err => {
-          this.loading = false;
-          console.log(err);
-          this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
-          return;
+          if (err === 401) {
+            this.requestError = "You are not properly signed in. Please log in again.";
+            return;
+          } else {
+            this.loading = false;
+            console.log(err);
+            this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
+            return;
+          }
         });
     this.router.navigate(['/admin']);
   }
@@ -619,10 +639,15 @@ export class GiveItemModal {
           this.activeModal.close(res);
         },
         err => {
-          this.loading = false;
-          console.log(err);
-          this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
-          return;
+          if (err === 401) {
+            this.requestError = "You are not properly signed in. Please log in again.";
+            return;
+          } else {
+            this.loading = false;
+            console.log(err);
+            this.requestError = "There was a problem with the request. Please try again but if this keeps happening you probably gotta hit up Waffle.";
+            return;
+          }
         });
 
     this.router.navigate(['/admin']);

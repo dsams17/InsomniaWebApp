@@ -51,7 +51,7 @@ import { ErrorInterceptor } from "./interceptors/http-error.interceptor";
     AppRoutingModule,
     NgbModule
   ],
-  providers: [RaiderTableService, RaiderHttpService, DecimalPipe, DataChangedService, AuthenticationService, /*{provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}*/],
+  providers: [RaiderTableService, RaiderHttpService, DecimalPipe, DataChangedService, AuthenticationService, {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true}],
   bootstrap: [AppComponent],
   entryComponents: [AddRaiderModal, DecayRaidersModal, AddDkpModal, GiveItemModal, SubtractDkpModal]
 })
