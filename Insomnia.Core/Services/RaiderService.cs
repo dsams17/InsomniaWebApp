@@ -67,13 +67,8 @@ namespace Insomnia.Core.Services
         {
             try
             {
-                // Look for cache key.
-                if (!_cache.TryGetValue("ALL", out IEnumerable<RaiderEntity> allRaiders))
-                {
-                    // Key not in cache, so get data.
-                    allRaiders = await _database.SelectAll<RaiderEntity>("Raider");
-                }
-
+                var allRaiders = await _database.SelectAll<RaiderEntity>("Raider");
+                
                 foreach (var raider in allRaiders)
                 {
                     if (raider.Dkp < 1) continue;
@@ -116,12 +111,8 @@ namespace Insomnia.Core.Services
                 var add = raidersAndDkp.DkpToAdd;
                 var dict = raidersAndDkp.Raiders.ToDictionary(raider => raider.Name);
 
-                // Look for cache key.
-                if (!_cache.TryGetValue("ALL", out IEnumerable<RaiderEntity> allRaiders))
-                {
-                    // Key not in cache, so get data.
-                    allRaiders = await _database.SelectAll<RaiderEntity>("Raider");
-                }
+                var allRaiders = await _database.SelectAll<RaiderEntity>("Raider");
+                
 
                 foreach (var raider in allRaiders)
                 {
